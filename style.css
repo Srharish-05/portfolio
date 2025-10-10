@@ -68,12 +68,12 @@ p {
   transform: translateY(0);
 }
 
-/* ===== NAVBAR ===== */
+/* ===== NAVBAR (MODIFIED) ===== */
 .navbar {
   position: fixed;
   top: 0;
   width: 100%;
-  background: rgba(29, 29, 32, 0.9); /* Use Charcoal with transparency */
+  background: rgba(29, 29, 32, 0.9); 
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: space-between;
@@ -93,6 +93,7 @@ p {
 nav {
   display: flex;
   gap: 30px;
+  position: relative; 
 }
 nav a {
   text-decoration: none;
@@ -103,25 +104,23 @@ nav a {
   transition: color 0.3s;
   position: relative;
 }
-nav a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  display: block;
-  margin-top: 2px;
-  right: 0;
-  background: var(--color-accent);
-  transition: width 0.3s ease;
+
+/* NEW: Styles for the Animated Indicator */
+.nav-indicator {
+    position: absolute;
+    bottom: -5px; 
+    height: 2px;
+    background: var(--color-accent);
+    transition: all 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+    opacity: 0;
 }
-nav a:hover {
-  color: var(--color-accent);
+
+/* NEW: Hover and Active styles for the links */
+nav a:hover,
+nav a.active {
+    color: var(--color-accent);
 }
-nav a:hover::after {
-  width: 100%;
-  left: 0;
-  background: var(--color-accent);
-}
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -136,31 +135,43 @@ nav a:hover::after {
   transition: all 0.3s ease;
 }
 
-/* ===== MOBILE NAV ===== */
+/* ===== MOBILE NAV (FIXED TO HIDE COMPLETELY) ===== */
 @media (max-width: 768px) {
   nav {
     position: absolute;
     top: 65px;
     right: 0;
-    background: rgba(29, 29, 32, 0.98);
-    backdrop-filter: blur(10px);
+    /* Use solid dark background to prevent any visual artifacts */
+    background: var(--color-dark); 
+    backdrop-filter: none; 
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    padding: 20px 0;
+    
+    /* CRITICAL FIXES */
+    padding: 0; /* Ensure no padding in closed state */
     width: 100%;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s ease-in-out;
-    border-top: 1px solid #33333330;
+    /* Adjusted transitions: max-height/padding animate on close, border disappears instantly */
+    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out, border-top 0s ease 0.4s;
+    border-top: none; /* Ensure no border in closed state */
   }
+  
   nav.open {
-    max-height: 300px;
+    max-height: 300px; /* Large enough to fit all links */
+    padding: 20px 0; /* Add padding when open */
+    /* Border appears instantly when opening, transitions out smoothly when closing (handled by nav) */
+    border-top: 1px solid #33333330; 
+    /* Adjusted transition: shorter delay for border when opening */
+    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out, border-top 0s ease 0s;
   }
   nav a {
     padding: 8px 0;
   }
-  nav a::after {
+  
+  /* HIDE THE INDICATOR ON MOBILE */
+  .nav-indicator {
     display: none;
   }
   .hamburger {
@@ -206,7 +217,6 @@ nav a:hover::after {
   max-width: 280px;
   min-width: 200px;
   text-align: center;
-  /* Set a fixed size for the container */
   width: 280px; 
   height: 280px; 
   margin: 0 auto;
@@ -216,7 +226,7 @@ nav a:hover::after {
   width: 100%;
   height: 100%;
   max-height: 300px;
-  border-radius: 8px; /* Square edges for real image */
+  border-radius: 8px; 
   object-fit: cover;
   border: 4px solid var(--color-accent);
   box-shadow: 0 0 20px rgba(0, 184, 217, 0.3); 
@@ -228,21 +238,16 @@ nav a:hover::after {
 
 /* NEW: Default DP Placeholder Styles (WhatsApp-like) */
 .hero-image.default-dp {
-    /* Ensures the circular container has the same look/size */
     width: 280px;
     height: 280px;
-    border-radius: 50%; /* Makes it circular */
+    border-radius: 50%; 
     border: 4px solid var(--color-accent);
     box-shadow: 0 0 20px rgba(0, 184, 217, 0.3);
-    
-    /* Background and Content Alignment */
-    background: var(--color-bg-alt); /* A slightly lighter background inside the border */
+    background: var(--color-bg-alt); 
     display: flex;
     justify-content: center;
     align-items: center;
     transition: transform 0.3s ease;
-    
-    /* Remove the hover effect for the placeholder */
     cursor: default; 
 }
 
@@ -251,8 +256,8 @@ nav a:hover::after {
 }
 
 .hero-image.default-dp .fa-user {
-    color: var(--color-accent); /* The icon color is the accent cyan */
-    font-size: 150px; /* Large icon size */
+    color: var(--color-accent); 
+    font-size: 150px; 
     opacity: 0.8;
 }
 
@@ -299,7 +304,6 @@ nav a:hover::after {
 .btn.primary:hover {
   background: transparent;
   color: var(--color-accent);
-  /* Updated Shadow: Cyan RGB(0, 184, 217) */
   box-shadow: 0 0 10px rgba(0, 184, 217, 0.4); 
 }
 .btn.large {
@@ -323,7 +327,7 @@ h2 {
 
 /* ===== SKILLS ===== */
 .skills {
-  background: var(--color-bg-alt); /* Changed from dark to alt, as skills is now the first section after hero */
+  background: var(--color-bg-alt); 
 }
 .skills-grid {
   display: flex;
@@ -334,7 +338,7 @@ h2 {
   margin: auto;
 }
 .skill-item {
-  background: #38383a; /* Slightly darker than bg-alt for contrast */
+  background: #38383a; 
   border: 1px solid #454545;
   border-radius: 4px;
   padding: 8px 15px;
@@ -350,7 +354,7 @@ h2 {
 
 /* ===== ACHIEVEMENTS (FIXED LAYOUT) ===== */
 .achievements {
-  background: var(--color-dark); /* Changed from alt to dark for alternating sections */
+  background: var(--color-dark); 
 }
 .achievements-list {
   max-width: 1000px;
@@ -361,7 +365,7 @@ h2 {
   perspective: 1000px;
 }
 .achievement-item {
-  background: #38383a; /* Use darker charcoal for card background */
+  background: #38383a; 
   border-radius: 8px;
   padding: 0; 
   transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
@@ -376,49 +380,42 @@ h2 {
 /* 3D effect on hover */
 .achievement-item:hover {
   transform: perspective(1000px) rotateX(1deg) translateY(-10px);
-  /* Updated Shadow: Cyan RGB(0, 184, 217) */
   box-shadow: 0 15px 30px rgba(0, 184, 217, 0.4),
               0 0 5px rgba(0, 184, 217, 0.7);
 }
 
 /* --- START OF FINAL FIX: VERTICAL STACKING --- */
 .award-content {
-    /* Change to vertical stacking (column) */
     display: flex;
     flex-direction: column; 
-    align-items: center; /* Center content horizontally within the card */
-    padding: 0; /* Remove padding from the wrapper */
+    align-items: center; 
+    padding: 0; 
 }
 
 .award-image-container {
-    /* Full width container for the image area */
     flex-shrink: 0; 
     width: 100%; 
-    height: 120px; /* Give it a reasonable height for the image thumbnail */
-    margin: 0; /* Remove margin-right */
-    border-radius: 8px 8px 0 0; /* Match card radius on top, none on bottom */
+    height: 120px; 
+    margin: 0; 
+    border-radius: 8px 8px 0 0; 
     overflow: hidden;
     border-bottom: 1px solid #454545;
     position: relative;
-    
-    /* Center the image/content inside the container */
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    padding: 10px; /* Add some padding around the image for breathing room */
+    padding: 10px; 
 }
 
 .award-image-container img {
-    /* Now the image should fit well within the padded container */
     width: 90%;
     height: 90%;
-    object-fit: contain; /* CRUCIAL: 'contain' to show the whole certificate */
+    object-fit: contain; 
     transition: opacity 0.3s ease;
     border-radius: 4px;
 }
 
-/* Overlay for click cue on achievements - Text is now better placed */
+/* Overlay for click cue on achievements */
 .award-image-container::before {
     content: "View Certificate";
     position: absolute;
@@ -431,7 +428,7 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.9rem; /* Increased size for better visibility */
+    font-size: 0.9rem; 
     font-weight: 600;
     text-align: center;
     opacity: 0; 
@@ -445,8 +442,8 @@ h2 {
 .award-text {
     flex-grow: 1; 
     width: 100%;
-    text-align: center; /* Center the text content below the image */
-    padding: 20px 20px; /* Add padding to the text content */
+    text-align: center; 
+    padding: 20px 20px; 
 }
 /* --- END OF FINAL FIX --- */
 
@@ -464,7 +461,7 @@ h2 {
 
 /* ===== PROJECTS (Restored Original Flex Hover Animation) ===== */
 .projects {
-  background: var(--color-bg-alt); /* Changed from dark to alt for alternating sections */
+  background: var(--color-bg-alt); 
 }
 .project-container {
   display: flex; 
@@ -476,7 +473,7 @@ h2 {
 .project-card-flex {
   flex: 1; 
   min-width: 150px;
-  background: #38383a; /* Use darker charcoal for card background */
+  background: #38383a; 
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #333;
@@ -503,7 +500,7 @@ h2 {
 
 /* --- FIX FOR LAPTOP READABILITY --- */
 .project-card-flex:hover img {
-    opacity: 0.3; /* This will darken the image significantly on hover for contrast */
+    opacity: 0.3; 
 }
 
 .project-info {
@@ -514,7 +511,6 @@ h2 {
   flex-direction: column;
   justify-content: flex-end;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-  /* IMPROVED: Use a stronger, darker gradient for better text contrast */
   background: linear-gradient(to top, var(--color-dark) 0%, rgba(29, 29, 32, 0) 60%); 
   opacity: 0;
   transition: opacity 0.4s ease 0.2s;
@@ -527,7 +523,6 @@ h2 {
 .project-info h3, 
 .project-info p, 
 .project-info .project-category {
-  /* ENSURE: All text elements are bright light color for maximum contrast */
   color: var(--color-light);
   margin: 0;
 }
@@ -552,6 +547,9 @@ h2 {
   font-weight: 500;
   font-size: 0.95rem;
   transition: color 0.3s;
+  /* CRITICAL FIX FOR MOBILE CLICKS: Ensure the link is explicitly above all other content */
+  position: relative;
+  z-index: 10; 
 }
 .project-link:hover {
   color: var(--color-light);
@@ -561,18 +559,15 @@ h2 {
 
 /* --- NEW: COMING SOON PROJECT CARD STYLES --- */
 .project-card-flex.coming-soon {
-    /* Override flex behavior for the "coming soon" card */
-    flex: 1 !important; /* Prevents it from shrinking/growing */
+    flex: 1 !important; 
     background: var(--color-bg-alt); 
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     cursor: default;
-    /* Dashed border for a "placeholder" look */
     border: 3px dashed var(--color-accent); 
-    transition: box-shadow 0.3s ease; /* Keep a subtle transition for glow */
-    /* Add initial shadow and apply the new animation */
+    transition: box-shadow 0.3s ease; 
     box-shadow: 0 0 10px rgba(0, 184, 217, 0.3); 
     animation: card-loading-pulse 3s infinite ease-in-out;
 }
@@ -583,7 +578,6 @@ h2 {
 /* Disable the special hover on the coming soon card itself */
 .project-card-flex.coming-soon:hover {
   transform: none;
-  /* Remove the box-shadow animation when a sibling is hovered */
   animation: card-loading-pulse 3s infinite ease-in-out;
 }
 
@@ -749,10 +743,9 @@ h2 {
   padding-bottom: 100px;
 }
 .contact h2 {
-  /* Retaining existing h2 style but adjusting margin for cleaner layout */
   text-align: center;
   font-weight: 600;
-  margin-bottom: 40px; /* Reduced from 60px for tighter spacing */
+  margin-bottom: 40px; 
   color: var(--color-accent);
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -762,7 +755,7 @@ h2 {
 .wrapper {
     display: flex;
     justify-content: center;
-    gap: 25px; /* Space between icons */
+    gap: 25px; 
     margin-top: 20px; 
 }
 
@@ -770,7 +763,7 @@ h2 {
     position: relative;
     width: 60px;
     height: 60px;
-    background: #252528; /* Darker background for the icons */
+    background: #252528; 
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -786,15 +779,14 @@ h2 {
 /* Icon Hover/Glow Effect */
 .icon:hover {
     color: var(--color-light); 
-    /* The CSS custom property --icon-color is set below */
     box-shadow: 0 0 5px var(--icon-color),
                 0 0 25px var(--icon-color);
-    animation: glow-pulse 1.5s infinite alternate; /* Pulsating glow */
+    animation: glow-pulse 1.5s infinite alternate; 
 }
 
 /* Icon-specific initial colors and hover colors */
 .icon.linkedin { --icon-color: var(--linkedin-color); }
-.icon.github { --icon-color: var(--color-light); } /* Use light color for GitHub glow */
+.icon.github { --icon-color: var(--color-light); } 
 .icon.email { --icon-color: var(--email-color); }
 .icon.phone { --icon-color: var(--phone-color); }
 
@@ -820,7 +812,7 @@ h2 {
 
 
 footer {
-  background: var(--color-bg-alt); /* Changed from dark to alt for contrast */
+  background: var(--color-bg-alt); 
   color: #777;
   text-align: center;
   padding: 30px 15px;
@@ -864,15 +856,15 @@ footer {
     flex-direction: column;
     height: auto;
     gap: 30px;
-    /* FIX 2: Disable the desktop flex hover effect that prevents clicks */
-    pointer-events: none; /* Disable mouse events on the container */
+    /* FIX: Removed pointer-events: none; from here to enable clicks */
   }
   .project-card-flex {
     flex: 1 !important;
     min-height: 250px;
-    pointer-events: auto; /* Re-enable mouse events on the cards */
+    /* Ensure card itself accepts clicks for any other possible internal elements */
+    pointer-events: auto; 
   }
-  /* Disable the project card hover animation on tablet screens (900px and below) */
+  /* Disable the desktop flex hover effect */
   .project-container:hover .project-card-flex {
     flex: 1 !important; 
   }
@@ -882,7 +874,7 @@ footer {
     position: static;
     opacity: 1;
     background: none;
-    padding: 20px; /* Ensure padding is kept on mobile */
+    padding: 20px; 
   }
   .project-card-flex img {
     opacity: 0.2; /* Dims the image permanently on small screens */
@@ -926,8 +918,8 @@ footer {
   .project-modal-content {
       width: 95%;
       padding: 30px;
-      margin: 40px auto; /* Tighter margin for more screen space */
-      max-height: 90vh; /* Ensures scrollability on small screens */
+      margin: 40px auto; 
+      max-height: 90vh; 
       overflow-y: auto;
   }
   
