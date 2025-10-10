@@ -41,8 +41,8 @@
           
           <a href="resume.pdf" download class="btn primary large">Download Resume</a>
         </div>
-        <div class="hero-image">
-          <img src="images/your-photo.jpg" alt="Harish photo" />
+        <div class="hero-image default-dp">
+          <i class="fas fa-user"></i>
         </div>
       </div>
     </div>
@@ -52,14 +52,10 @@
     <div class="container">
       <h2>Technical Skills</h2>
       <div class="skills-grid">
-        <div class="skill-item">Microwave Studio CST</div>
         <div class="skill-item">HTML</div>
-        <div class="skill-item">CSS / SASS</div>
+        <div class="skill-item">CSS </div>
         <div class="skill-item">JavaScript</div>
         <div class="skill-item">Java</div>
-        <div class="skill-item">Embedded C</div>
-        <div class="skill-item">IoT Platforms</div>
-        <div class="skill-item">Git/GitHub</div>
       </div>
     </div>
   </section>
@@ -155,7 +151,7 @@
         <a href="https://github.com/Srharish-05" target="_blank" class="icon github" aria-label="GitHub">
           <i class="fab fa-github"></i>
         </a>
-        <a href="mailto:srharish05@gmail.com" class="icon email" aria-label="Email">
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=srharish05@gmail.com" class="icon email" aria-label="Email">
           <i class="fa fa-envelope"></i>
         </a>
         <a href="tel:+919790555548" class="icon phone" aria-label="Phone">
@@ -199,20 +195,26 @@
 
     faders.forEach(fader => appearOnScroll.observe(fader));
 
-    // ===== Mobile Menu Toggle =====
+    // ===== Mobile Menu Toggle (UPDATED) =====
     const hamburger = document.getElementById("hamburger");
     const navMenu = document.getElementById("navMenu");
 
-    hamburger.addEventListener("click", () => {
-      hamburger.classList.toggle("active");
-      navMenu.classList.toggle("open");
-    });
+    function toggleMenu() {
+        hamburger.classList.toggle("active");
+        navMenu.classList.toggle("open"); // The class is 'open' in your CSS
+        // OPTIONAL: Prevent body scrolling when mobile menu is open
+        document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : 'auto';
+    }
+
+    hamburger.addEventListener("click", toggleMenu);
 
     // Close menu when clicking a link
-    document.querySelectorAll("nav a").forEach(link => {
+    document.querySelectorAll("#navMenu a").forEach(link => {
       link.addEventListener("click", () => {
-        hamburger.classList.remove("active");
-        navMenu.classList.remove("open");
+        // Only close if the menu is actually open
+        if (navMenu.classList.contains("open")) {
+            toggleMenu(); 
+        }
       });
     });
     
@@ -240,7 +242,6 @@
     }
 
     // --- Project Data (Detailed Descriptions) ---
-    // Removed 'banking-app' since the card is now 'coming-soon'
     const projectDescriptions = {
         'medinav': {
             title: 'MediNav – Ambulance Navigation System',
