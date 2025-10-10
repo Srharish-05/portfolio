@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harish S | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">Harish<span>.</span></div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav id="navMenu">
+      <a href="#skills">Skills</a>
+      <a href="#achievements">Achievements</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-content fade-in">
+      <div class="hero-main">
+        <div class="hero-text">
+          <p class="greeting">Hello, I'm</p>
+          <h1>Harish S</h1>
+          <p class="tagline">Electronics & Communication Engineering Student</p>
+          
+          <p>
+            I’m an Electronics and Communication Engineering student passionate about integrating hardware and software to create innovative, real-world solutions. My work spans IoT systems and full-stack web development, with a focus on functionality, usability, and continuous learning.
+          </p>
+          
+          <a href="resume.pdf" download class="btn primary large">Download Resume</a>
+        </div>
+        <div class="hero-image">
+          <img src="images/your-photo.jpg" alt="Harish photo" />
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section id="skills" class="skills fade-in">
+    <div class="container">
+      <h2>Technical Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-item">Microwave Studio CST</div>
+        <div class="skill-item">HTML</div>
+        <div class="skill-item">CSS / SASS</div>
+        <div class="skill-item">JavaScript</div>
+        <div class="skill-item">Java</div>
+        <div class="skill-item">Embedded C</div>
+        <div class="skill-item">IoT Platforms</div>
+        <div class="skill-item">Git/GitHub</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="achievements" class="achievements fade-in">
+    <div class="container">
+      <h2>Achievements</h2> <div class="achievements-list">
+        
+        <div class="achievement-item" data-cert-src="certificate1.jpg">
+          <div class="award-content clickable-cert">
+            <div class="award-image-container">
+              <img src="certificate1.jpg" alt="NPTEL Cloud Computing Certificate" />
+            </div>
+            <div class="award-text">
+              <h3>NPTEL: Cloud Computing (Elite)</h3>
+              <p>Completed 12-week course with an Elite score of 73% (Jul-Oct 2024).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="achievement-item" data-cert-src="certificate2.jpg">
+          <div class="award-content clickable-cert">
+            <div class="award-image-container">
+              <img src="certificate2.jpg" alt="Wipro Infrastructure Engineering Internship Certificate" />
+            </div>
+            <div class="award-text">
+              <h3>Wipro Infrastructure Engineering Internship </h3>
+              <p>Successfully completed and certified 30 days internship with stipend at Wipro Infrastructure Engineering  </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="achievement-item" data-cert-src="certificate3.jpg">
+          <div class="award-content clickable-cert">
+            <div class="award-image-container">
+              <img src="certificate3.jpg" alt="JAVA Coding Event 1st Prize Certificate" />
+            </div>
+            <div class="award-text">
+              <h3>Coding Event</h3>
+              <p>Secured First place in JAVA programming event named "CODE IT"</p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="projects fade-in">
+    <div class="container">
+      <h2>Projects</h2>
+      <div class="project-container">
+        
+        <div class="project-card-flex">
+          <img src="project2.jpg" alt="Automatic Light Upper Dipper" />
+          <div class="project-info">
+            <span class="project-category">Embedded System</span>
+            <h3>Automatic Light Upper Dipper</h3>
+            <p>A smart system using LDR and relay control to automatically switch between high and low beam for safer night driving.</p>
+            <a href="#" class="project-link" data-project-id="fuel-theft">View Details &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="project-card-flex">
+          <img src="project1.jpg" alt="MediNav Project" />
+          <div class="project-info">
+            <span class="project-category">IoT / Web App</span>
+            <h3>MediNav – Ambulance Navigation System</h3>
+            <p>IoT + Web integrated system for real-time ambulance tracking and hospital route selection.</p>
+            <a href="#" class="project-link" data-project-id="medinav">View Details &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="project-card-flex coming-soon">
+          <div class="coming-soon-overlay">
+            <i class="fas fa-circle-notch fa-spin"></i> 
+            <h3>Project In Progress</h3>
+            <p>Stay tuned for updates!</p>
+          </div>
+        </div>
+        </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact fade-in">
+    <div class="container">
+      <h2>Contact</h2>
+      
+      <div class="wrapper">
+        <a href="https://www.linkedin.com/in/harish-s05" target="_blank" class="icon linkedin" aria-label="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="https://github.com/Srharish-05" target="_blank" class="icon github" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="mailto:srharish05@gmail.com" class="icon email" aria-label="Email">
+          <i class="fa fa-envelope"></i>
+        </a>
+        <a href="tel:+919790555548" class="icon phone" aria-label="Phone">
+          <i class="fa fa-phone"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Harish S &bull; ECE Student</p>
+    <p>© 2025 All rights reserved.</p>
+  </footer>
+
+  <div id="certModal" class="modal">
+    <span class="close-btn" id="closeCert">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+  
+  <div id="project-modal">
+    <div class="project-modal-content">
+      <span class="close-btn" id="closeProject">&times;</span>
+      <div id="project-details-content">
+        </div>
+    </div>
+  </div>
+
+
+  <script>
+    // ===== Fade-in animation =====
+    const faders = document.querySelectorAll(".fade-in");
+    const appearOptions = { threshold: 0.2, rootMargin: "0px 0px -50px 0px" };
+
+    const appearOnScroll = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      });
+    }, appearOptions);
+
+    faders.forEach(fader => appearOnScroll.observe(fader));
+
+    // ===== Mobile Menu Toggle =====
+    const hamburger = document.getElementById("hamburger");
+    const navMenu = document.getElementById("navMenu");
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navMenu.classList.toggle("open");
+    });
+
+    // Close menu when clicking a link
+    document.querySelectorAll("nav a").forEach(link => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        navMenu.classList.remove("open");
+      });
+    });
+    
+    // --- Certificate Modal Logic ---
+    const certModal = document.getElementById("certModal");
+    const modalImg = document.getElementById("modalImage");
+    const closeCert = document.getElementById("closeCert");
+    const certs = document.querySelectorAll(".achievement-item");
+
+    certs.forEach(cert => {
+        cert.addEventListener('click', function() {
+            const certSrc = this.getAttribute('data-cert-src');
+            if (certSrc) {
+                certModal.style.display = "block";
+                modalImg.src = certSrc;
+                document.body.style.overflow = "hidden"; 
+            }
+        });
+    });
+
+    closeCert.onclick = function(event) { 
+        event.stopPropagation();
+        certModal.style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+
+    // --- Project Data (Detailed Descriptions) ---
+    // Removed 'banking-app' since the card is now 'coming-soon'
+    const projectDescriptions = {
+        'medinav': {
+            title: 'MediNav – Ambulance Navigation System',
+            category: 'IoT / Full-Stack Web App', 
+            description: 'MediNav is an IoT-based intelligent ambulance navigation and management system designed to reduce emergency response delays. It integrates GPS, GSM, and Wi-Fi modules with an Arduino microcontroller to track ambulances in real time and communicate with hospitals and users. The web application, built with **Node.js, Express, and Supabase**, enables users to request ambulances and drivers to accept or decline requests. It also provides live map updates using **Leaflet**, displaying ambulance locations, traffic congestion, and the nearest hospitals for faster routing.',
+            tech: ['Node.js', 'Express', 'Supabase', 'Leaflet (Maps)', 'IoT (Arduino, Microcontrollers)', 'GPS/GSM Modules']
+        },
+        'fuel-theft': {
+            title: 'Automatic Headlight Beam Controller',
+            category: 'Embedded System / Road Safety',
+            description: 'This project is designed to enhance road safety by automatically controlling a vehicle’s headlight beam. It detects the intensity of light from oncoming vehicles using an **LDR sensor** and switches the headlight between high and low beam accordingly. The system helps prevent glare, improving night-time visibility and reducing driver fatigue. It is implemented using a **relay control circuit**, transistor, and basic electronic components on a **PCB prototype**.',
+            tech: ['LDR Sensor', 'Relay Control Circuit', 'Transistor', 'PCB Prototype', 'Electronic Components', 'Road Safety Systems']
+        }
+    };
+    
+    // --- Project Modal Logic ---
+    const projectModal = document.getElementById('project-modal');
+    const projectDetailsContent = document.getElementById('project-details-content');
+    const projectLinks = document.querySelectorAll('.project-link');
+    const closeProject = document.getElementById('closeProject');
+
+    function openProjectModal(projectId) {
+        const data = projectDescriptions[projectId];
+        if (!data) return;
+
+        let techPills = data.tech.map(t => `<div class="skill-item">${t}</div>`).join('');
+        
+        projectDetailsContent.innerHTML = `
+            <h3>${data.title}</h3>
+            <span class="detail-category">${data.category}</span>
+            <p>${data.description}</p>
+            <p style="font-weight: 600; color: var(--color-light); margin-top: 30px; margin-bottom: 10px;">Technologies Used:</p>
+            <div class="tech-pills">${techPills}</div>
+        `;
+
+        projectModal.style.display = 'block';
+        document.body.style.overflow = "hidden";
+    }
+
+    projectLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            const projectId = this.getAttribute('data-project-id');
+            openProjectModal(projectId);
+        });
+    });
+
+    closeProject.onclick = function(event) {
+        event.stopPropagation();
+        projectModal.style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+
+    // Close modals if the user clicks the dark background
+    window.onclick = function(event) {
+      if (event.target == certModal) {
+        certModal.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+      if (event.target == projectModal) {
+        projectModal.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    }
+  </script>
+</body>
+</html>

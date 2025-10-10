@@ -1,0 +1,888 @@
+/*
+Minimalist & Professional Style Guide:
+- Font: Inter (Modern and highly readable)
+- Primary Color: Dark Charcoal Gray (#1D1D20)
+- Accent Color: A striking, modern Cyan/Sky Blue (#00B8D9)
+- Emphasis: Bold text, ample whitespace, subtle borders/shadows.
+*/
+
+/* ===== GLOBAL & RESET ===== */
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+:root {
+  --color-dark: #1D1D20; /* Dark Charcoal Gray */
+  --color-light: #F0F0F0; /* Off-white for headings */
+  --color-text: #B0B0B5; /* Light Gray for body text */
+  --color-accent: #00B8D9; /* Striking Cyan/Sky Blue */
+  --color-bg-alt: #2A2A2E; /* Slightly Lighter Charcoal for alternate sections */
+  --font-family-primary: 'Inter', sans-serif;
+  
+  /* NEW: Icon-specific colors for the glow effect */
+  --linkedin-color: #0A66C2; 
+  --github-color: #333333; /* Darker, but we'll use a lighter glow */
+  --email-color: #EA4335; 
+  --phone-color: #25D366; 
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  background: var(--color-dark);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Typography Reset/Enhancement */
+h1, h2, h3 {
+  color: var(--color-light);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 { font-size: 3.5rem; }
+h2 { font-size: 2.2rem; }
+h3 { font-size: 1.5rem; }
+
+p {
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+/* ===== FADE-IN ANIMATION ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(29, 29, 32, 0.9); /* Use Charcoal with transparency */
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  z-index: 100;
+  border-bottom: 1px solid #33333330;
+}
+.logo {
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--color-light);
+}
+.logo span {
+  color: var(--color-accent);
+}
+nav {
+  display: flex;
+  gap: 30px;
+}
+nav a {
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 5px 0;
+  transition: color 0.3s;
+  position: relative;
+}
+nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 2px;
+  right: 0;
+  background: var(--color-accent);
+  transition: width 0.3s ease;
+}
+nav a:hover {
+  color: var(--color-accent);
+}
+nav a:hover::after {
+  width: 100%;
+  left: 0;
+  background: var(--color-accent);
+}
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+.hamburger span {
+  width: 25px;
+  height: 2px;
+  background: var(--color-accent);
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+/* ===== MOBILE NAV ===== */
+@media (max-width: 768px) {
+  nav {
+    position: absolute;
+    top: 65px;
+    right: 0;
+    background: rgba(29, 29, 32, 0.98);
+    backdrop-filter: blur(10px);
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 0;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    border-top: 1px solid #33333330;
+  }
+  nav.open {
+    max-height: 300px;
+  }
+  nav a {
+    padding: 8px 0;
+  }
+  nav a::after {
+    display: none;
+  }
+  .hamburger {
+    display: flex;
+  }
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translateY(6px);
+  }
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translateY(-6px);
+  }
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 20px 20px;
+  text-align: left;
+}
+.hero-content {
+  width: 100%;
+  max-width: 1000px;
+}
+.hero-main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+}
+.hero-text {
+  flex: 2;
+  min-width: 300px;
+}
+.hero-image {
+  flex: 1;
+  max-width: 280px;
+  min-width: 200px;
+  text-align: center;
+}
+.hero-image img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 4px solid var(--color-accent);
+  /* Updated Shadow: Cyan RGB(0, 184, 217) */
+  box-shadow: 0 0 20px rgba(0, 184, 217, 0.3); 
+  transition: transform 0.3s ease;
+}
+.hero-image img:hover {
+  transform: translateY(-5px);
+}
+.hero-content .greeting {
+  font-size: 1.1rem;
+  color: var(--color-accent);
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+.hero-content h1 {
+  font-size: 4rem;
+  margin: 0 0 10px;
+}
+.hero-content .tagline {
+  font-size: 1.5rem;
+  color: var(--color-light);
+  margin-bottom: 30px;
+  font-weight: 300;
+}
+.hero-content p {
+  color: var(--color-text);
+  font-size: 1.1rem;
+  max-width: 600px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 12px 28px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  margin-right: 15px;
+}
+.btn.primary {
+  background: var(--color-accent);
+  color: var(--color-dark);
+  border: 2px solid var(--color-accent);
+}
+.btn.primary:hover {
+  background: transparent;
+  color: var(--color-accent);
+  /* Updated Shadow: Cyan RGB(0, 184, 217) */
+  box-shadow: 0 0 10px rgba(0, 184, 217, 0.4); 
+}
+.btn.large {
+  padding: 15px 35px;
+  font-size: 1.1rem;
+}
+
+/* ===== SECTION HEADERS ===== */
+section {
+  padding: 100px 0;
+  border-top: 1px solid #ffffff08;
+}
+h2 {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 60px;
+  color: var(--color-accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ===== SKILLS ===== */
+.skills {
+  background: var(--color-bg-alt); /* Changed from dark to alt, as skills is now the first section after hero */
+}
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 800px;
+  margin: auto;
+}
+.skill-item {
+  background: #38383a; /* Slightly darker than bg-alt for contrast */
+  border: 1px solid #454545;
+  border-radius: 4px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-light);
+  transition: background 0.3s, color 0.3s;
+}
+.skill-item:hover {
+  background: var(--color-accent);
+  color: var(--color-dark);
+}
+
+/* ===== ACHIEVEMENTS (FIXED LAYOUT) ===== */
+.achievements {
+  background: var(--color-dark); /* Changed from alt to dark for alternating sections */
+}
+.achievements-list {
+  max-width: 1000px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  perspective: 1000px;
+}
+.achievement-item {
+  background: #38383a; /* Use darker charcoal for card background */
+  border-radius: 8px;
+  padding: 0; 
+  transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
+  position: relative;
+  border-left: 3px solid var(--color-accent);
+  transform: perspective(1000px) rotateX(0deg) translateY(0);
+  will-change: transform, box-shadow;
+  overflow: hidden; 
+  cursor: pointer; 
+}
+
+/* 3D effect on hover */
+.achievement-item:hover {
+  transform: perspective(1000px) rotateX(1deg) translateY(-10px);
+  /* Updated Shadow: Cyan RGB(0, 184, 217) */
+  box-shadow: 0 15px 30px rgba(0, 184, 217, 0.4),
+              0 0 5px rgba(0, 184, 217, 0.7);
+}
+
+/* --- START OF FINAL FIX: VERTICAL STACKING --- */
+.award-content {
+    /* Change to vertical stacking (column) */
+    display: flex;
+    flex-direction: column; 
+    align-items: center; /* Center content horizontally within the card */
+    padding: 0; /* Remove padding from the wrapper */
+}
+
+.award-image-container {
+    /* Full width container for the image area */
+    flex-shrink: 0; 
+    width: 100%; 
+    height: 120px; /* Give it a reasonable height for the image thumbnail */
+    margin: 0; /* Remove margin-right */
+    border-radius: 8px 8px 0 0; /* Match card radius on top, none on bottom */
+    overflow: hidden;
+    border-bottom: 1px solid #454545;
+    position: relative;
+    
+    /* Center the image/content inside the container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 10px; /* Add some padding around the image for breathing room */
+}
+
+.award-image-container img {
+    /* Now the image should fit well within the padded container */
+    width: 90%;
+    height: 90%;
+    object-fit: contain; /* CRUCIAL: 'contain' to show the whole certificate */
+    transition: opacity 0.3s ease;
+    border-radius: 4px;
+}
+
+/* Overlay for click cue on achievements - Text is now better placed */
+.award-image-container::before {
+    content: "View Certificate";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); 
+    color: var(--color-accent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem; /* Increased size for better visibility */
+    font-weight: 600;
+    text-align: center;
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+}
+
+.achievement-item:hover .award-image-container::before {
+    opacity: 1;
+}
+
+.award-text {
+    flex-grow: 1; 
+    width: 100%;
+    text-align: center; /* Center the text content below the image */
+    padding: 20px 20px; /* Add padding to the text content */
+}
+/* --- END OF FINAL FIX --- */
+
+.achievement-item h3 {
+  color: var(--color-light);
+  font-size: 1.1rem; 
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.achievement-item p {
+  color: var(--color-text);
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+/* ===== PROJECTS (Restored Original Flex Hover Animation) ===== */
+.projects {
+  background: var(--color-bg-alt); /* Changed from dark to alt for alternating sections */
+}
+.project-container {
+  display: flex; 
+  gap: 15px;
+  height: 400px;
+  max-width: 1000px;
+  margin: auto;
+}
+.project-card-flex {
+  flex: 1; 
+  min-width: 150px;
+  background: #38383a; /* Use darker charcoal for card background */
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+  cursor: pointer;
+  transition: flex 0.6s ease-in-out; 
+  position: relative;
+}
+/* Restored Animation Logic */
+.project-container:hover .project-card-flex {
+  flex: 0.8;
+}
+.project-container:hover .project-card-flex:hover {
+  flex: 5;
+}
+.project-card-flex img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+.project-info {
+  position: relative;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  /* Updated gradient to use the new color-dark */
+  background: linear-gradient(to top, rgba(29, 29, 32, 0.8) 0%, rgba(29, 29, 32, 0) 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease 0.2s;
+}
+.project-card-flex:hover .project-info {
+  opacity: 1;
+}
+.project-info h3, .project-info p, .project-info .project-category {
+  color: var(--color-light);
+  margin: 0;
+}
+.project-info h3 {
+  color: var(--color-accent);
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 1.5rem;
+}
+.project-category {
+  display: block;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+/* Style for the "View Details" link inside the card */
+.project-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s;
+}
+.project-link:hover {
+  color: var(--color-light);
+}
+
+/* --- NEW: COMING SOON PROJECT CARD STYLES --- */
+.project-card-flex.coming-soon {
+    /* Override flex behavior for the "coming soon" card */
+    flex: 1 !important; /* Prevents it from shrinking/growing */
+    background: var(--color-bg-alt); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: default;
+    /* Dashed border for a "placeholder" look */
+    border: 3px dashed var(--color-accent); 
+    transition: box-shadow 0.3s ease; /* Keep a subtle transition for glow */
+    /* Add initial shadow and apply the new animation */
+    box-shadow: 0 0 10px rgba(0, 184, 217, 0.3); 
+    animation: card-loading-pulse 3s infinite ease-in-out;
+}
+/* Disable hover animation on the parent container when hovering over a regular project */
+.project-container:hover .project-card-flex.coming-soon {
+  flex: 1 !important;
+}
+/* Disable the special hover on the coming soon card itself */
+.project-card-flex.coming-soon:hover {
+  transform: none;
+  /* Remove the box-shadow animation when a sibling is hovered */
+  animation: card-loading-pulse 3s infinite ease-in-out;
+}
+
+/* Ensure the regular project image/info is hidden when using this class */
+.project-card-flex.coming-soon img,
+.project-card-flex.coming-soon .project-info {
+    display: none;
+}
+
+.coming-soon-overlay {
+    padding: 20px;
+}
+
+/* Style for the Spinning Icon */
+.coming-soon-overlay .fa-spin {
+    font-size: 3.5rem;
+    color: var(--color-accent);
+    margin-bottom: 20px;
+}
+
+.coming-soon-overlay h3 {
+    color: var(--color-light);
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.coming-soon-overlay p {
+    color: var(--color-text);
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Keyframe for the entire card's loading pulse */
+@keyframes card-loading-pulse {
+    0% {
+        border-color: rgba(0, 184, 217, 0.5);
+        box-shadow: 0 0 10px rgba(0, 184, 217, 0.3);
+    }
+    50% {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 20px var(--color-accent);
+    }
+    100% {
+        border-color: rgba(0, 184, 217, 0.5);
+        box-shadow: 0 0 10px rgba(0, 184, 217, 0.3);
+    }
+}
+/* --- END: COMING SOON PROJECT CARD STYLES --- */
+
+
+/* ===== MODAL STYLES (Unchanged) ===== */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 200; 
+  padding-top: 50px; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.95); 
+  text-align: center;
+}
+.modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 90vh;
+  object-fit: contain; 
+}
+
+/* Project Detail Modal */
+#project-modal {
+  display: none; 
+  position: fixed; 
+  z-index: 201; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.9); 
+  padding: 20px;
+}
+
+.project-modal-content {
+  background-color: var(--color-bg-alt);
+  margin: 80px auto 40px; 
+  padding: 40px;
+  border: 1px solid #444;
+  width: 90%;
+  max-width: 700px; 
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+  animation: modalopen 0.4s;
+}
+
+@keyframes modalopen {
+  from {opacity: 0; transform: translateY(-50px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.project-modal-content h3 {
+    color: var(--color-accent);
+    font-size: 2rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.project-modal-content .detail-category {
+    color: var(--color-text);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 25px;
+}
+
+.tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.tech-pills .skill-item {
+    background: #38383a;
+    border: 1px solid var(--color-accent);
+    color: var(--color-light);
+    cursor: default;
+}
+.tech-pills .skill-item:hover {
+    background: #38383a; 
+    color: var(--color-light);
+}
+
+/* Close Button (Shared with both modals) */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+  z-index: 202; 
+}
+.close-btn:hover,
+.close-btn:focus {
+  color: var(--color-accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ===== CONTACT & FOOTER (Unchanged) ===== */
+.contact {
+  background: var(--color-dark);
+  text-align: center;
+  padding-bottom: 100px;
+}
+.contact h2 {
+  /* Retaining existing h2 style but adjusting margin for cleaner layout */
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 40px; /* Reduced from 60px for tighter spacing */
+  color: var(--color-accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* NEW: Styles for the Glowing Social Icons */
+.wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 25px; /* Space between icons */
+    margin-top: 20px; 
+}
+
+.icon {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background: #252528; /* Darker background for the icons */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Icon Hover/Glow Effect */
+.icon:hover {
+    color: var(--color-light); 
+    /* The CSS custom property --icon-color is set below */
+    box-shadow: 0 0 5px var(--icon-color),
+                0 0 25px var(--icon-color);
+    animation: glow-pulse 1.5s infinite alternate; /* Pulsating glow */
+}
+
+/* Icon-specific initial colors and hover colors */
+.icon.linkedin { --icon-color: var(--linkedin-color); }
+.icon.github { --icon-color: var(--color-light); } /* Use light color for GitHub glow */
+.icon.email { --icon-color: var(--email-color); }
+.icon.phone { --icon-color: var(--phone-color); }
+
+.icon.linkedin:hover { background: var(--linkedin-color); color: var(--color-light); }
+.icon.github:hover { background: var(--github-color); color: var(--color-light); }
+.icon.email:hover { background: var(--email-color); color: var(--color-light); }
+.icon.phone:hover { background: var(--phone-color); color: var(--color-dark); }
+
+
+/* Keyframes for the glowing pulse animation */
+@keyframes glow-pulse {
+    0% {
+        box-shadow: 0 0 5px var(--icon-color),
+                    0 0 10px var(--icon-color),
+                    0 0 20px rgba(0,0,0,0.5);
+    }
+    100% {
+        box-shadow: 0 0 10px var(--icon-color),
+                    0 0 30px var(--icon-color),
+                    0 0 45px var(--icon-color);
+    }
+}
+
+
+footer {
+  background: var(--color-bg-alt); /* Changed from dark to alt for contrast */
+  color: #777;
+  text-align: center;
+  padding: 30px 15px;
+  border-top: 1px solid #333333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-size: 0.9rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .hero-main {
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+  .hero-text {
+    min-width: unset;
+  }
+  .hero-image {
+    max-width: 250px;
+    margin-bottom: 30px;
+  }
+  .hero-image img {
+    height: 250px;
+  }
+
+  /* Projects section on smaller screens: Revert to stack layout */
+  .project-container {
+    flex-direction: column;
+    height: auto;
+    gap: 30px;
+  }
+  .project-card-flex {
+    flex: 1 !important;
+    min-height: 250px;
+  }
+  .project-card-flex img {
+    opacity: 0.2;
+  }
+  .project-info {
+    position: static;
+    opacity: 1;
+    background: none;
+  }
+  
+  /* Achievements stack vertically on mobile */
+  .achievements-list {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .achievement-item:hover {
+    /* Less intense animation for small screens */
+    transform: perspective(1000px) rotateX(0deg) translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 184, 217, 0.4);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+  .hero-content .tagline {
+    font-size: 1.3rem;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+  .close-btn {
+    font-size: 30px;
+    top: 10px;
+    right: 20px;
+  }
+  .project-modal-content {
+      width: 95%;
+      padding: 30px;
+  }
+}
+
+@media (max-width: 500px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  .navbar {
+    padding: 15px 20px;
+  }
+  .btn.large {
+    padding: 12px 20px;
+  }
+  /* Responsive styles for the new icons */
+  .wrapper {
+    flex-wrap: wrap; 
+    gap: 15px;
+  }
+  .icon {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+  }
+  
+  /* Coming Soon font size reduction on small screens */
+  .coming-soon-overlay .fa-spin {
+    font-size: 3rem;
+    margin-bottom: 15px;
+  }
+  .coming-soon-overlay h3 {
+    font-size: 1.5rem;
+  }
+  .coming-soon-overlay p {
+    font-size: 1rem;
+  }
+}
