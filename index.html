@@ -24,6 +24,7 @@
       <a href="#achievements">Achievements</a>
       <a href="#projects">Projects</a>
       <a href="#contact">Contact</a>
+      <span class="nav-indicator"></span> 
     </nav>
   </header>
 
@@ -62,7 +63,8 @@
 
   <section id="achievements" class="achievements fade-in">
     <div class="container">
-      <h2>Achievements</h2> <div class="achievements-list">
+      <h2>Achievements</h2> 
+      <div class="achievements-list">
         
         <div class="achievement-item" data-cert-src="certificate1.jpg">
           <div class="award-content clickable-cert">
@@ -151,7 +153,7 @@
         <a href="https://github.com/Srharish-05" target="_blank" class="icon github" aria-label="GitHub">
           <i class="fab fa-github"></i>
         </a>
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=srharish05@gmail.com" class="icon email" aria-label="Email">
+        <a href="mailto:srharish05@gmail.com" class="icon email" aria-label="Email">
           <i class="fa fa-envelope"></i>
         </a>
         <a href="tel:+919790555548" class="icon phone" aria-label="Phone">
@@ -181,8 +183,15 @@
 
 
   <script>
-    // ===== Fade-in animation =====
+    // ===== Fade-in animation & Intersection Observer for ScrollSpy =====
     const faders = document.querySelectorAll(".fade-in");
+    const navLinks = document.querySelectorAll('#navMenu a');
+    const indicator = document.querySelector('.nav-indicator');
+    const navMenu = document.getElementById("navMenu");
+    // Only target sections that have corresponding navigation links
+    const sections = document.querySelectorAll('section#skills, section#achievements, section#projects, section#contact'); 
+    
+    // --- Fade-in Observer ---
     const appearOptions = { threshold: 0.2, rootMargin: "0px 0px -50px 0px" };
 
     const appearOnScroll = new IntersectionObserver((entries, observer) => {
@@ -194,31 +203,134 @@
     }, appearOptions);
 
     faders.forEach(fader => appearOnScroll.observe(fader));
+    
+    // --- Nav Indicator Functions ---
+    function moveIndicator(element) {
+        // Only run on desktop/larger screens
+        if (!indicator || window.innerWidth <= 768) return; 
+        
+        const navRect = navMenu.getBoundingClientRect();
+        const linkRect = element.getBoundingClientRect();
+        
+        const width = linkRect.width;
+        const left = linkRect.left - navRect.left; 
+        
+        indicator.style.width = `${width}px`;
+        indicator.style.left = `${left}px`;
+        indicator.style.opacity = 1;
+    }
 
-    // ===== Mobile Menu Toggle (UPDATED) =====
+    function setActiveLink(linkId) {
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${linkId}`) {
+                link.classList.add('active');
+                if (window.innerWidth > 768) {
+                    moveIndicator(link);
+                }
+            }
+        });
+    }
+
+    // --- ScrollSpy Observer ---
+    const observerOptions = {
+        root: null, // viewport
+        rootMargin: '-50% 0px -49% 0px', 
+        threshold: 0
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        let currentSectionId = null;
+        
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.boundingClientRect.top < window.innerHeight / 2) {
+                     currentSectionId = entry.target.id;
+                }
+            }
+        });
+
+        if (currentSectionId) {
+            setActiveLink(currentSectionId);
+        } else {
+             const firstLink = document.querySelector('#navMenu a[href="#skills"]');
+             if (firstLink && !document.querySelector('#navMenu a.active')) {
+                 setActiveLink('skills');
+             }
+        }
+    }, observerOptions);
+
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
+
+    // --- Nav Interaction Listeners ---
+    navLinks.forEach(link => {
+        link.addEventListener('mouseover', function() {
+            if (window.innerWidth > 768) {
+                moveIndicator(this);
+            }
+        });
+        
+        link.addEventListener('click', function(e) {
+             navLinks.forEach(l => l.classList.remove('active'));
+             this.classList.add('active');
+             if (window.innerWidth > 768) {
+                setTimeout(() => moveIndicator(this), 100); 
+             }
+             
+             // BUG FIX: Ensure mobile menu closes on click
+             if (navMenu.classList.contains("open")) {
+                 // Use a short delay before closing to allow the scroll to initiate smoothly
+                 setTimeout(toggleMenu, 100); 
+             }
+        });
+    });
+
+    // Mouseleave: Snap back to the currently active link
+    navMenu.addEventListener('mouseleave', function() {
+        if (window.innerWidth <= 768) return; // Disable on mobile
+        
+        const activeLink = document.querySelector('#navMenu a.active');
+        
+        if (activeLink) {
+            moveIndicator(activeLink);
+        } else {
+             indicator.style.opacity = 0;
+        }
+    });
+    
+    // Initial setup on page load 
+    window.addEventListener('load', () => {
+        const initialId = window.location.hash ? window.location.hash.substring(1) : 'skills';
+        setTimeout(() => setActiveLink(initialId), 200); 
+    });
+    
+    // Recalculate indicator position on window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            const activeLink = document.querySelector('#navMenu a.active');
+            if (activeLink) {
+                moveIndicator(activeLink);
+            }
+        } else {
+            if (indicator) indicator.style.opacity = 0;
+        }
+    });
+
+    // ===== Mobile Menu Toggle (Function Fix) =====
     const hamburger = document.getElementById("hamburger");
-    const navMenu = document.getElementById("navMenu");
 
     function toggleMenu() {
         hamburger.classList.toggle("active");
-        navMenu.classList.toggle("open"); // The class is 'open' in your CSS
-        // OPTIONAL: Prevent body scrolling when mobile menu is open
+        navMenu.classList.toggle("open");
+        // FIX: Prevent body scrolling when mobile menu is open
         document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : 'auto';
     }
 
     hamburger.addEventListener("click", toggleMenu);
 
-    // Close menu when clicking a link
-    document.querySelectorAll("#navMenu a").forEach(link => {
-      link.addEventListener("click", () => {
-        // Only close if the menu is actually open
-        if (navMenu.classList.contains("open")) {
-            toggleMenu(); 
-        }
-      });
-    });
-    
-    // --- Certificate Modal Logic ---
+    // --- Modal Logic (Unchanged) ---
     const certModal = document.getElementById("certModal");
     const modalImg = document.getElementById("modalImage");
     const closeCert = document.getElementById("closeCert");
