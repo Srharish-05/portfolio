@@ -24,7 +24,6 @@
       <a href="#achievements">Achievements</a>
       <a href="#projects">Projects</a>
       <a href="#contact">Contact</a>
-      <span class="nav-indicator"></span> 
     </nav>
   </header>
 
@@ -153,9 +152,15 @@
         <a href="https://github.com/Srharish-05" target="_blank" class="icon github" aria-label="GitHub">
           <i class="fab fa-github"></i>
         </a>
-        <a href="mailto:srharish05@gmail.com" class="icon email" aria-label="Email" id="emailLink">
+        
+        <a href="javascript:void(0);" onclick="openDelayedMail(event)" class="icon email desktop-only" aria-label="Email">
           <i class="fa fa-envelope"></i>
         </a>
+        
+        <a href="mailto:srharish05@gmail.com" class="icon email mobile-only" aria-label="Email">
+          <i class="fa fa-envelope"></i>
+        </a>
+
         <a href="tel:+919790555548" class="icon phone" aria-label="Phone">
           <i class="fa fa-phone"></i>
         </a>
@@ -165,14 +170,14 @@
 
   <footer>
     <p>Harish S &bull; ECE Student</p>
-    <p>© 2025 All rights reserved.</p>
+    <p>&copy; 2025 All rights reserved.</p>
   </footer>
 
   <div id="certModal" class="modal">
     <span class="close-btn" id="closeCert">&times;</span>
     <img class="modal-content" id="modalImage">
   </div>
-  
+
   <div id="project-modal">
     <div class="project-modal-content">
       <span class="close-btn" id="closeProject">&times;</span>
@@ -181,202 +186,94 @@
     </div>
   </div>
 
-
   <script>
-    // ===== Fade-in animation & Intersection Observer for ScrollSpy =====
+    // ===== Fade-in animation =====
     const faders = document.querySelectorAll(".fade-in");
-    const navLinks = document.querySelectorAll('#navMenu a');
-    const indicator = document.querySelector('.nav-indicator');
-    const navMenu = document.getElementById("navMenu");
-    // Only target sections that have corresponding navigation links
-    const sections = document.querySelectorAll('section#skills, section#achievements, section#projects, section#contact'); 
-    
-    // --- Fade-in Observer ---
-    const appearOptions = { threshold: 0.2, rootMargin: "0px 0px -50px 0px" };
-
-    const appearOnScroll = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("visible");
-        observer.unobserve(entry.target);
-      });
-    }, appearOptions);
-
-    faders.forEach(fader => appearOnScroll.observe(fader));
-    
-    // --- Nav Indicator Functions ---
-    function moveIndicator(element) {
-        // Only run on desktop/larger screens
-        if (!indicator || window.innerWidth <= 768) return; 
-        
-        const navRect = navMenu.getBoundingClientRect();
-        const linkRect = element.getBoundingClientRect();
-        
-        const width = linkRect.width;
-        const left = linkRect.left - navRect.left; 
-        
-        indicator.style.width = `${width}px`;
-        indicator.style.left = `${left}px`;
-        indicator.style.opacity = 1;
-    }
-
-    function setActiveLink(linkId) {
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${linkId}`) {
-                link.classList.add('active');
-                if (window.innerWidth > 768) {
-                    moveIndicator(link);
-                }
-            }
-        });
-    }
-
-    // --- ScrollSpy Observer ---
-    const observerOptions = {
-        root: null, // viewport
-        rootMargin: '-50% 0px -49% 0px', 
-        threshold: 0
+    const appearOptions = {
+        threshold: 0.2,
+        rootMargin: "0px 0px -50px 0px"
     };
-
-    const sectionObserver = new IntersectionObserver((entries) => {
-        let currentSectionId = null;
-        
+    const appearOnScroll = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                if (entry.boundingClientRect.top < window.innerHeight / 2) {
-                     currentSectionId = entry.target.id;
-                }
-            }
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
         });
+    }, appearOptions);
+    faders.forEach(fader => appearOnScroll.observe(fader));
 
-        if (currentSectionId) {
-            setActiveLink(currentSectionId);
-        } else {
-             const firstLink = document.querySelector('#navMenu a[href="#skills"]');
-             if (firstLink && !document.querySelector('#navMenu a.active')) {
-                 setActiveLink('skills');
-             }
-        }
-    }, observerOptions);
-
-    sections.forEach(section => {
-        sectionObserver.observe(section);
-    });
-
-    // --- Nav Interaction Listeners ---
-    navLinks.forEach(link => {
-        link.addEventListener('mouseover', function() {
-            if (window.innerWidth > 768) {
-                moveIndicator(this);
-            }
-        });
-        
-        link.addEventListener('click', function(e) {
-             navLinks.forEach(l => l.classList.remove('active'));
-             this.classList.add('active');
-             if (window.innerWidth > 768) {
-                setTimeout(() => moveIndicator(this), 100); 
-             }
-             
-             // BUG FIX: Ensure mobile menu closes on click
-             if (navMenu.classList.contains("open")) {
-                 // Use a short delay before closing to allow the scroll to initiate smoothly
-                 setTimeout(toggleMenu, 100); 
-             }
-        });
-    });
-
-    // Mouseleave: Snap back to the currently active link
-    navMenu.addEventListener('mouseleave', function() {
-        if (window.innerWidth <= 768) return; // Disable on mobile
-        
-        const activeLink = document.querySelector('#navMenu a.active');
-        
-        if (activeLink) {
-            moveIndicator(activeLink);
-        } else {
-             indicator.style.opacity = 0;
-        }
-    });
-    
-    // Initial setup on page load 
-    window.addEventListener('load', () => {
-        const initialId = window.location.hash ? window.location.hash.substring(1) : 'skills';
-        setTimeout(() => setActiveLink(initialId), 200); 
-    });
-    
-    // Recalculate indicator position on window resize
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) {
-            const activeLink = document.querySelector('#navMenu a.active');
-            if (activeLink) {
-                moveIndicator(activeLink);
-            }
-        } else {
-            if (indicator) indicator.style.opacity = 0;
-        }
-    });
-
-    // ===== Mobile Menu Toggle (Function Fix) =====
+    // ===== Mobile Menu Toggle (UPDATED Z-INDEX) =====
     const hamburger = document.getElementById("hamburger");
+    const navMenu = document.getElementById("navMenu");
 
     function toggleMenu() {
         hamburger.classList.toggle("active");
         navMenu.classList.toggle("open");
-        // FIX: Prevent body scrolling when mobile menu is open
-        document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : 'auto';
+        
+        // CRITICAL FIX: Ensure nav is above other elements on mobile
+        if (navMenu.classList.contains('open')) {
+            navMenu.style.zIndex = '99'; // Lower than fixed navbar (100) but higher than content (0)
+        } else {
+            navMenu.style.zIndex = 'initial';
+        }
     }
 
     hamburger.addEventListener("click", toggleMenu);
 
-    // --- Modal Logic (Unchanged) ---
-    const certModal = document.getElementById("certModal");
-    const modalImg = document.getElementById("modalImage");
-    const closeCert = document.getElementById("closeCert");
-    const certs = document.querySelectorAll(".achievement-item");
-
-    certs.forEach(cert => {
-        cert.addEventListener('click', function() {
-            const certSrc = this.getAttribute('data-cert-src');
-            if (certSrc) {
-                certModal.style.display = "block";
-                modalImg.src = certSrc;
-                document.body.style.overflow = "hidden"; 
+    // Close menu when a link is clicked
+    document.querySelectorAll('#navMenu a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                hamburger.classList.remove("active");
+                navMenu.classList.remove("open");
+                navMenu.style.zIndex = 'initial'; 
             }
         });
     });
+    
+    // ===== Certificate Modal Logic (Unchanged) =====
+    const certModal = document.getElementById("certModal");
+    const modalImage = document.getElementById("modalImage");
+    const closeCert = document.getElementById("closeCert");
+    const clickableCerts = document.querySelectorAll(".clickable-cert");
 
-    closeCert.onclick = function(event) { 
-        event.stopPropagation();
+    clickableCerts.forEach(cert => {
+        cert.addEventListener('click', function() {
+            const imgSrc = this.closest('.achievement-item').getAttribute('data-cert-src');
+            modalImage.src = imgSrc;
+            certModal.style.display = "block";
+            document.body.style.overflow = "hidden";
+        });
+    });
+
+    closeCert.onclick = function() {
         certModal.style.display = "none";
         document.body.style.overflow = "auto";
     }
 
-    // --- Project Data (Detailed Descriptions) ---
-    const projectDescriptions = {
-        'medinav': {
-            title: 'MediNav – Ambulance Navigation System',
-            category: 'IoT / Full-Stack Web App', 
-            description: 'MediNav is an IoT-based intelligent ambulance navigation and management system designed to reduce emergency response delays. It integrates GPS, GSM, and Wi-Fi modules with an Arduino microcontroller to track ambulances in real time and communicate with hospitals and users. The web application, built with **Node.js, Express, and Supabase**, enables users to request ambulances and drivers to accept or decline requests. It also provides live map updates using **Leaflet**, displaying ambulance locations, traffic congestion, and the nearest hospitals for faster routing.',
-            tech: ['Node.js', 'Express', 'Supabase', 'Leaflet (Maps)', 'IoT (Arduino, Microcontrollers)', 'GPS/GSM Modules']
+    // ===== Project Modal Logic (Unchanged) =====
+    const projectModal = document.getElementById("project-modal");
+    const projectDetailsContent = document.getElementById("project-details-content");
+    const closeProject = document.getElementById("closeProject");
+    const projectLinks = document.querySelectorAll('.project-link');
+
+    const projectData = {
+        "medinav": {
+            title: "MediNav – Ambulance Navigation System",
+            category: "IoT / Full-Stack Web App",
+            description: "MediNav is an IoT-based intelligent ambulance navigation and management system designed to reduce emergency response delays. It integrates GPS, GSM, and Wi-Fi modules with an Arduino microcontroller to track ambulances in real time and communicate with hospitals and users. The web application, built with **Node.js, Express, and Supabase**, enables users to request ambulances and drivers to accept or decline requests. It also provides live map updates using **Leaflet**, displaying ambulance locations, traffic congestion, and the nearest hospitals for faster routing.",
+            tech: ["Node.js", "Express", "Supabase", "Leaflet (Maps)", "IoT (Arduino, Microcontrollers)", "GPS/GSM Modules"]
         },
-        'fuel-theft': {
-            title: 'Automatic Headlight Beam Controller',
-            category: 'Embedded System / Road Safety',
-            description: 'This project is designed to enhance road safety by automatically controlling a vehicle’s headlight beam. It detects the intensity of light from oncoming vehicles using an **LDR sensor** and switches the headlight between high and low beam accordingly. The system helps prevent glare, improving night-time visibility and reducing driver fatigue. It is implemented using a **relay control circuit**, transistor, and basic electronic components on a **PCB prototype**.',
-            tech: ['LDR Sensor', 'Relay Control Circuit', 'Transistor', 'PCB Prototype', 'Electronic Components', 'Road Safety Systems']
+        "fuel-theft": {
+            title: "Automatic Light Upper Dipper",
+            category: "Embedded System",
+            description: "A smart, cost-effective embedded system designed to improve night driving safety. It uses an **LDR (Light Dependent Resistor)** sensor to detect the intensity of light from oncoming vehicles. When high light intensity is detected, a **Relay control mechanism** automatically switches the vehicle's headlight from high beam to low beam. This prevents temporary blindness for the approaching driver, significantly reducing the risk of accidents. The system uses basic electronics principles and a microcontroller for simple, reliable automation.",
+            tech: ["Arduino", "LDR Sensor", "Relay Module", "Basic C++ for Microcontrollers", "Embedded Systems Design"]
         }
     };
-    
-    // --- Project Modal Logic ---
-    const projectModal = document.getElementById('project-modal');
-    const projectDetailsContent = document.getElementById('project-details-content');
-    const projectLinks = document.querySelectorAll('.project-link');
-    const closeProject = document.getElementById('closeProject');
 
     function openProjectModal(projectId) {
-        const data = projectDescriptions[projectId];
+        const data = projectData[projectId];
         if (!data) return;
 
         let techPills = data.tech.map(t => `<div class="skill-item">${t}</div>`).join('');
@@ -418,22 +315,25 @@
         document.body.style.overflow = "auto";
       }
     }
+    
+    // ===== Email Open Fix for Desktop (Unchanged JS) =====
+    function openDelayedMail(event) {
+        event.preventDefault();
+        const mailtoLink = "mailto:srharish05@gmail.com";
+        const targetUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=srharish05@gmail.com";
 
-    // ===== FIX: Force Native Mail App with Timeout on Mobile Devices =====
-    const emailLink = document.getElementById('emailLink');
-    if (emailLink) {
-        emailLink.addEventListener('click', function(e) {
-            // Prevent the browser's default handling of the mailto link
-            e.preventDefault(); 
-            const mailtoHref = this.href;
-            
-            // Introduce a small delay to allow the OS's intent system to register the navigation event.
-            // This is a last-resort trick for stubborn mobile browser configurations.
-            setTimeout(function() {
-                window.location.href = mailtoHref;
-            }, 100); 
-        });
+        // Try opening the Gmail link first
+        const newWindow = window.open(targetUrl, '_blank');
+
+        if (newWindow) {
+            // Check if the window was successfully opened (not blocked by a pop-up blocker)
+            newWindow.focus();
+        } else {
+            // Fallback to the direct mailto: link if a new window couldn't be opened
+            window.location.href = mailtoLink;
+        }
     }
+
   </script>
 </body>
 </html>
