@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harish S | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <div id="magic-bg">
+    <div class="magic-grid"></div>
+    <div class="magic-spotlight"></div>
+    <!-- Beams will be added by JS -->
+  </div>
+
+  <header class="navbar">
+    <div class="logo">Harish<span>.</span></div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav id="navMenu">
+      <a href="#skills">Skills</a>
+      <a href="#achievements">Achievements</a>
+      <a href="#projects">Projects</a>
+      <a href="#research">Research</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-content fade-in">
+      <div class="hero-main">
+        <div class="hero-text">
+          <p class="greeting">Hello, I'm</p>
+          <h1>Harish S</h1>
+          <p class="tagline">Electronics & Communication Engineering Student</p>
+
+          <p>
+            I'm an Electronics and Communication Engineering student passionate about integrating hardware and software
+            to create innovative, real-world solutions. My work spans IoT systems and full-stack web development, with a
+            focus on functionality, usability, and continuous learning.
+          </p>
+
+          <a href="resume.pdf" download class="btn primary large">Download Resume</a>
+        </div>
+        <div class="hero-image">
+          <img src="me.jpg" alt="Harish S - Profile Picture" class="profile-pic" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="skills fade-in">
+    <div class="container">
+      <h2>Technical Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-item">HTML</div>
+        <div class="skill-item">CSS </div>
+        <div class="skill-item">JavaScript</div>
+        <div class="skill-item">Java</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="achievements" class="achievements fade-in">
+    <div class="container">
+      <h2>Achievements</h2>
+      <div class="achievements-list">
+
+        <div class="achievement-item" data-cert-src="certificate1.jpg">
+          <div class="award-content clickable-cert">
+            <div class="award-image-container">
+              <img src="certificate1.jpg" alt="NPTEL Cloud Computing Certificate" />
+            </div>
+            <div class="award-text">
+              <h3>NPTEL: Cloud Computing (Elite)</h3>
+              <p>Completed 12-week course with an Elite score of 73% (Jul-Oct 2024).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="achievement-item" data-cert-src="certificate2.jpg">
+          <div class="award-content clickable-cert">
+            <div class="award-image-container">
+              <img src="certificate2.jpg" alt="Wipro Infrastructure Engineering Internship Certificate" />
+            </div>
+            <div class="award-text">
+              <h3>Wipro Infrastructure Engineering Internship </h3>
+              <p>Successfully completed and certified 30 days internship with stipend at Wipro Infrastructure
+                Engineering </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="achievement-item" data-cert-src="certificate3.jpg">
+          <div class="award-content clickable-cert">
+            <div class="award-image-container">
+              <img src="certificate3.jpg" alt="JAVA Coding Event 1st Prize Certificate" />
+            </div>
+            <div class="award-text">
+              <h3>Coding Event</h3>
+              <p>Secured First place in JAVA programming event named "CODE IT"</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="projects-section fade-in">
+    <div class="project-section-container">
+      <div class="section-header">
+        <h2>Explore My Projects</h2>
+        <p>A showcase of technical innovation and creative solutions.</p>
+      </div>
+
+      <div class="carousel-wrapper">
+        <div class="carousel-container">
+
+          <!-- Card 1: MediNav -->
+          <div class="project-card" data-index="0" data-project-id="medinav">
+            <div class="card-visual">
+              <img src="project1.jpg" alt="MediNav Project" />
+              <div class="card-overlay"></div>
+              <div class="card-badge">IoT / Web App</div>
+            </div>
+            <div class="card-content">
+              <h3>MediNav</h3>
+              <p>Ambulance Navigation & Tracking System</p>
+              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Light Dipper -->
+          <div class="project-card" data-index="1" data-project-id="fuel-theft">
+            <div class="card-visual">
+              <img src="project2.jpg" alt="Automatic Light Dipper" />
+              <div class="card-overlay"></div>
+              <div class="card-badge">Embedded System</div>
+            </div>
+            <div class="card-content">
+              <h3>Smart Light Dipper</h3>
+              <p>Automated Headlight Control System</p>
+              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
+            </div>
+          </div>
+
+          <!-- Card 3: Steganography -->
+          <div class="project-card" data-index="2" data-project-id="steganography">
+            <div class="card-visual">
+              <img src="project3.jpg" alt="Steganography" />
+              <div class="card-overlay"></div>
+              <div class="card-badge">Cybersecurity</div>
+            </div>
+            <div class="card-content">
+              <h3>Steganography</h3>
+              <p>Secure Data Transmission Tool</p>
+              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
+            </div>
+          </div>
+
+          <!-- Card 4: MKCE Clubs -->
+          <div class="project-card" data-index="3" data-project-id="mkce-clubs">
+            <div class="card-visual">
+              <img src="project4.png" alt="MKCE Club Pages" />
+              <div class="card-overlay"></div>
+              <div class="card-badge">Web Dev</div>
+            </div>
+            <div class="card-content">
+              <h3>MKCE Club Pages</h3>
+              <p>Interactive College Event Portal</p>
+              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
+            </div>
+          </div>
+
+          <!-- Card 5: PathMakers -->
+          <div class="project-card" data-index="4" data-project-id="pathmakers">
+            <div class="card-visual">
+              <img src="project5.png" alt="PathMakers Project" />
+              <div class="card-overlay"></div>
+              <div class="card-badge">Web Dev</div>
+            </div>
+            <div class="card-content">
+              <h3>PathMakers</h3>
+              <p>Production-Ready Frontend Websites</p>
+              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="carousel-controls">
+          <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+          <div class="carousel-indicators"></div>
+          <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research" class="research-section fade-in">
+    <div class="container">
+      <div class="section-header">
+        <h2>Research & Publications</h2>
+        <p>Contributing to the academic community with innovative solutions</p>
+      </div>
+
+      <div class="research-card">
+        <div class="research-header">
+          <div class="research-badges">
+            <span class="res-badge status">Accepted for IEEE Conference Publication</span>
+            <span class="res-badge date">Publication scheduled – Feb 2026</span>
+          </div>
+          <h3>Smart Industrial Preventive Maintenance & Asset Tracking System</h3>
+          <p class="conference">2026 International Conference on Electronics and Renewable Systems (ICEARS), IEEE</p>
+          <p class="authors">Authors: Vasuki S, Harish S, Harish Raj R, Jagan T</p>
+          <p class="description">IoT-based industrial system using ESP32, vibration, temperature, and current sensing
+            with RFID authentication and MQTT cloud communication for real-time preventive maintenance and asset
+            tracking.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact fade-in">
+    <div class="container">
+      <h2>Contact</h2>
+
+      <div class="wrapper">
+        <a href="https://www.linkedin.com/in/harish-s05" target="_blank" class="icon linkedin" aria-label="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="https://github.com/Srharish-05" target="_blank" class="icon github" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+
+        <a href="javascript:void(0);" onclick="openDelayedMail(event)" class="icon email desktop-only"
+          aria-label="Email">
+          <i class="fa fa-envelope"></i>
+        </a>
+
+        <a href="mailto:srharish05@gmail.com" class="icon email mobile-only" aria-label="Email">
+          <i class="fa fa-envelope"></i>
+        </a>
+
+        <a href="tel:+919790555548" class="icon phone" aria-label="Phone">
+          <i class="fa fa-phone"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Harish S &bull; ECE Student</p>
+    <p>&copy; 2025 All rights reserved.</p>
+  </footer>
+
+  <div id="certModal" class="modal">
+    <span class="close-btn" id="closeCert">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+
+  <div id="project-modal">
+    <div class="project-modal-content">
+      <span class="close-btn" id="closeProject">&times;</span>
+      <div id="project-details-content">
+      </div>
+    </div>
+  </div>
+
+  <!-- Anime.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script>
+    // ===== Fade-in animation =====
+    const faders = document.querySelectorAll(".fade-in");
+    const appearOptions = {
+      threshold: 0.2,
+      rootMargin: "0px 0px -50px 0px"
+    };
+    const appearOnScroll = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      });
+    }, appearOptions);
+    faders.forEach(fader => appearOnScroll.observe(fader));
+
+    // ===== Mobile Menu Toggle (UPDATED Z-INDEX) =====
+    const hamburger = document.getElementById("hamburger");
+    const navMenu = document.getElementById("navMenu");
+
+    function toggleMenu() {
+      hamburger.classList.toggle("active");
+      navMenu.classList.toggle("open");
+
+      // CRITICAL FIX: Ensure nav is above other elements on mobile
+      if (navMenu.classList.contains('open')) {
+        navMenu.style.zIndex = '99'; // Lower than fixed navbar (100) but higher than content (0)
+      } else {
+        navMenu.style.zIndex = 'initial';
+      }
+    }
+
+    hamburger.addEventListener("click", toggleMenu);
+
+    // Close menu when a link is clicked
+    document.querySelectorAll('#navMenu a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          hamburger.classList.remove("active");
+          navMenu.classList.remove("open");
+          navMenu.style.zIndex = 'initial';
+        }
+      });
+    });
+
+    // ===== Hologram Animation Logic =====
+    // Global State for Hologram
+    let activeClone = null;
+    let activeProjection = null; // New separate reference
+    let originalItem = null;
+
+    const achievementItems = document.querySelectorAll('.achievement-item');
+
+    // Create Layout Overlay
+    const holoOverlay = document.createElement('div');
+    holoOverlay.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 998; opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease; backdrop-filter: blur(5px);
+    `;
+    document.body.appendChild(holoOverlay);
+
+    // Close on overlay click
+    holoOverlay.addEventListener('click', () => {
+      if (activeClone) closeHologram();
+    });
+
+    achievementItems.forEach(item => {
+      // Click Handler
+      item.addEventListener('click', (e) => {
+        openHologram(item);
+        e.stopPropagation();
+      });
+    });
+
+    function openHologram(item) {
+      if (activeClone) return;
+
+      originalItem = item;
+      const rect = item.getBoundingClientRect();
+      const imgSrc = item.getAttribute('data-cert-src');
+
+      // 1. Create Clone (The Base)
+      activeClone = item.cloneNode(true);
+      activeClone.classList.add('hologram-clone');
+      activeClone.style.top = `${rect.top}px`;
+      activeClone.style.left = `${rect.left}px`;
+      activeClone.style.width = `${rect.width}px`;
+      activeClone.style.height = `${rect.height}px`;
+      activeClone.style.transition = 'none';
+      activeClone.style.margin = '0';
+
+      // Clean up clone content
+      activeClone.querySelectorAll('.hologram-projection').forEach(e => e.remove());
+      activeClone.innerHTML += `<div class="hologram-emitter-glow"></div>`; // Just the glow remains
+
+      document.body.appendChild(activeClone);
+
+      // 2. Create Projection (Separate Element)
+      activeProjection = document.createElement('div');
+      activeProjection.className = 'hologram-projection';
+      activeProjection.innerHTML = `
+        <div class="hologram-close-btn">×</div>
+        <img src="${imgSrc}" class="hologram-image" alt="Certificate">
+        <div class="hologram-scanline"></div>
+      `;
+      document.body.appendChild(activeProjection);
+
+      // Close Button
+      activeProjection.querySelector('.hologram-close-btn').addEventListener('click', (e) => {
+        closeHologram();
+      });
+
+      // 3. Hide Original & Show Overlay
+      item.style.opacity = '0';
+      if (holoOverlay) {
+        holoOverlay.style.opacity = '1';
+        holoOverlay.style.pointerEvents = 'auto';
+      }
+
+      // 4. Animate Both
+      const targetWidth = 300;
+      const targetHeight = 20;
+      const targetX = (window.innerWidth - targetWidth) / 2;
+      const targetY = window.innerHeight - 100;
+
+      const timeline = anime.timeline({ easing: 'easeOutExpo' });
+
+      // Animate Clone (Base)
+      timeline.add({
+        targets: activeClone,
+        top: targetY,
+        left: targetX,
+        width: targetWidth,
+        height: targetHeight,
+        backgroundColor: '#1a1a1d',
+        borderColor: '#00B8D9',
+        boxShadow: '0 0 40px rgba(0, 184, 217, 0.4)',
+        rotateX: 60,
+        duration: 800
+      });
+
+      // Hide content in base
+      anime({
+        targets: activeClone.querySelector('.award-content'),
+        opacity: 0,
+        duration: 200,
+        easing: 'linear'
+      });
+
+      // Animate Projection (Upwards from base)
+      timeline.add({
+        targets: activeProjection,
+        height: ['0vh', '70vh'],
+        opacity: [0, 1],
+        duration: 1000,
+        offset: '-=500' // Overlap with base arrival
+      });
+
+      // Fade in Image
+      timeline.add({
+        targets: activeProjection.querySelector('.hologram-image'),
+        opacity: [0, 1],
+        translateY: [50, 0],
+        duration: 800,
+        offset: '-=700'
+      });
+
+      // Base Glow
+      timeline.add({
+        targets: activeClone.querySelector('.hologram-emitter-glow'),
+        opacity: [0, 1],
+        duration: 500,
+        offset: '-=800'
+      });
+    }
+
+    function closeHologram() {
+      if (!activeClone || !originalItem) return;
+
+      const rect = originalItem.getBoundingClientRect();
+
+      const timeline = anime.timeline({ easing: 'easeInQuad' });
+
+      // Collapse Projection
+      if (activeProjection) {
+        timeline.add({
+          targets: activeProjection,
+          height: 0,
+          opacity: 0,
+          duration: 300
+        });
+      }
+
+      // Restore Base
+      timeline.add({
+        targets: activeClone,
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+        rotateX: 0,
+        backgroundColor: '#38383a',
+        borderColor: 'transparent',
+        boxShadow: 'none',
+        duration: 600,
+        easing: 'easeOutCubic',
+        complete: () => {
+          if (activeClone) activeClone.remove();
+          if (activeProjection) activeProjection.remove();
+          activeClone = null;
+          activeProjection = null;
+          if (originalItem) originalItem.style.opacity = '1';
+          originalItem = null;
+        }
+      });
+
+      // Restore Content
+      anime({
+        targets: activeClone.querySelector('.award-content'),
+        opacity: 1,
+        delay: 200,
+        duration: 300
+      });
+
+      // Hide Overlay
+      if (holoOverlay) {
+        holoOverlay.style.opacity = '0';
+        holoOverlay.style.pointerEvents = 'none';
+      }
+    }
+
+    // Keep the "View Modal" logic accessible if the user clicks the projected image?
+    // User request implied changing interaction to hologram, not keeping the modal. 
+    // "Interactive hologram reveal". Modal logic for full size view is removed from this interaction flow 
+    // as per "Modify only the interaction animation... to create a hologram-style projection".
+    // But we still have the modal HTML. Let's leave the modal element alone but disconnect it 
+    // from the card click since the card click now triggers the hologram.
+
+    // Legacy modal refs can stay or be ignored.
+    const modalImage = document.getElementById("modalImage");
+    const certModal = document.getElementById("certModal");
+    const closeCert = document.getElementById("closeCert");
+
+    // If the user really wants to see the full image, maybe clicking the *projection* opens the modal?
+    // Let's add that for usability.
+
+    /* 
+    const clickableCerts = document.querySelectorAll(".clickable-cert");
+    clickableCerts.forEach(cert => { ... }); 
+    */
+
+    // REPLACED ABOVE WITH HOLOGRAM LOGIC. 
+
+    closeCert.onclick = function () {
+      certModal.style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+
+    // ===== Project Modal Logic & Cinematic Carousel =====
+    const projectModal = document.getElementById("project-modal");
+    const projectDetailsContent = document.getElementById("project-details-content");
+    const closeProject = document.getElementById("closeProject");
+
+    // Data Object
+    const projectData = {
+      "medinav": {
+        title: "MediNav – Ambulance Navigation System",
+        category: "IoT / Full-Stack Web App",
+        description: "MediNav is an IoT-based intelligent ambulance navigation and management system designed to reduce emergency response delays. It integrates GPS, GSM, and Wi-Fi modules with an Arduino microcontroller to track ambulances in real time and communicate with hospitals and users. The web application, built with Node.js, Express, and Supabase, enables users to request ambulances and drivers to accept or decline requests. It also provides live map updates using Leaflet, displaying ambulance locations, traffic congestion, and the nearest hospitals for faster routing.",
+        tech: ["Node.js", "Express", "Supabase", "Leaflet (Maps)", "IoT (Arduino, Microcontrollers)", "GPS/GSM Modules"],
+        github_link: "https://srharish-05.github.io/MediNav/"
+      },
+      "fuel-theft": { // Kept ID for consistency with image mapping, but represents Light Dipper
+        title: "Automatic Light Upper Dipper",
+        category: "Embedded System",
+        description: "A smart, cost-effective embedded system designed to improve night driving safety. It uses an **LDR (Light Dependent Resistor)** sensor to detect the intensity of light from oncoming vehicles. When high light intensity is detected, a **Relay control mechanism** automatically switches the vehicle's headlight from high beam to low beam. This prevents temporary blindness for the approaching driver, significantly reducing the risk of accidents. The system uses basic electronics principles and a microcontroller for simple, reliable automation.",
+        tech: ["Arduino", "LDR Sensor", "Relay Module", "Basic C++ for Microcontrollers", "Embedded Systems Design"]
+      },
+      "steganography": {
+        title: "Steganography Project",
+        category: "Security / Cybersecurity",
+        description: "This project was developed during a certified internship under the Edunet Foundation in collaboration with IBM SkillsBuild, focusing on secure data transmission using steganography techniques. It hides confidential information within digital media to ensure imperceptible and secure communication. The approach strengthens information security and minimizes the risk of data interception over public networks. ",
+        tech: ["Steganography Techniques", "Information Security Fundamentals", "Secure Data Hiding", "Python Programming", "Cybersecurity Basics"],
+        github_link: "https://github.com/Srharish-05/EdunetStego"
+      },
+      "mkce-clubs": {
+        title: "MKCE Club Pages",
+        category: "Web Development",
+        description: "Designed and developed responsive college club web pages focusing on clear content structure, smooth animations, and user-friendly navigation. The pages effectively present club information, events, and announcements for students across all departments.",
+        tech: ["HTML", "CSS", "JavaScript", "Anime.js", "Responsive Web Design"],
+        github_link: "https://clubs.mkce.ac.in/"
+      },
+      "pathmakers": {
+        title: "PathMakers – Frontend Web Projects",
+        category: "Web Development",
+        description: "PathMakers represents a collection of responsive, production-ready websites developed using modern frontend technologies. The projects include PlumberPro (a professional plumbing services website), ProSport (a sports performance and fitness platform), and ElectroGlass (a tech components e-commerce interface). Each website was built with a focus on clean design, responsive layouts, cross-browser compatibility, and optimized user experience.",
+        tech: ["HTML5", "CSS3", "JavaScript", "Responsive Web Design", "Cross-Browser Compatibility", "UI/UX Best Practices"],
+        more_links: [
+          { label: "Electroglass", url: "https://nareshdharmaraj.github.io/Electroglass/" },
+          { label: "Prosport", url: "https://nareshdharmaraj.github.io/Prosport/" },
+          { label: "Plumberpro", url: "https://nareshdharmaraj.github.io/plumberpro/" }
+        ]
+      }
+    };
+
+    function openProjectModal(projectId) {
+      const data = projectData[projectId];
+      if (!data) return;
+
+      let techPills = data.tech.map(t => `<div class="skill-item">${t}</div>`).join('');
+
+      let projectButton = '';
+      if (data.github_link && data.github_link !== 'N/A') {
+        const cleanLink = data.github_link.replace(/[\(\)]/g, '');
+        let buttonText = cleanLink.includes('github.com') ? 'View Project on GitHub' : 'View Live Project';
+        let iconClass = cleanLink.includes('github.com') ? 'fab fa-github' : 'fas fa-external-link-alt';
+
+        projectButton = `<a href="${cleanLink}" target="_blank" class="btn primary small project-github-btn">
+                                <i class="${iconClass}"></i> ${buttonText}
+                            </a>`;
+      }
+
+      let extraLinksHtml = '';
+      if (data.more_links) {
+        extraLinksHtml = '<div class="project-links" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">';
+        data.more_links.forEach(link => {
+          extraLinksHtml += `<a href="${link.url}" target="_blank" class="btn primary small"><i class="fas fa-external-link-alt"></i> ${link.label}</a>`;
+        });
+        extraLinksHtml += '</div>';
+      }
+
+      projectDetailsContent.innerHTML = `
+            <h3>${data.title}</h3>
+            <span class="detail-category">${data.category}</span>
+            <p>${data.description}</p>
+            ${projectButton} 
+            ${extraLinksHtml}
+            <p style="font-weight: 600; color: var(--color-light); margin-top: 30px; margin-bottom: 10px;">Technologies Used:</p>
+            <div class="tech-pills">${techPills}</div>
+        `;
+
+      projectModal.style.display = 'block';
+      document.body.style.overflow = "hidden";
+    }
+
+    closeProject.onclick = function (event) {
+      event.stopPropagation();
+      projectModal.style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+
+    // Anime.js Carousel Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.project-card');
+      if (cards.length === 0) return; // Guard clause
+
+      const container = document.querySelector('.carousel-container');
+      const indicatorsContainer = document.querySelector('.carousel-indicators');
+      let currentIndex = 0;
+      let isAnimating = false;
+      const totalCards = cards.length;
+
+      // Init Indicators
+      if (indicatorsContainer) {
+        indicatorsContainer.innerHTML = '';
+        cards.forEach((_, index) => {
+          const dot = document.createElement('div');
+          dot.classList.add('indicator-dot');
+          if (index === 0) dot.classList.add('active');
+          dot.addEventListener('click', () => {
+            if (!isAnimating && index !== currentIndex) {
+              updateCarousel(index);
+            }
+          });
+          indicatorsContainer.appendChild(dot);
+        });
+      }
+
+      const indicators = document.querySelectorAll('.indicator-dot');
+
+      function updateIndicators(index) {
+        indicators.forEach((dot, i) => {
+          if (i === index) dot.classList.add('active');
+          else dot.classList.remove('active');
+        });
+      }
+
+      function updateCarousel(newIndex) {
+        if (isAnimating) return;
+        isAnimating = true;
+        currentIndex = newIndex;
+        updateIndicators(currentIndex);
+
+        const isMobile = window.innerWidth <= 768;
+
+        cards.forEach((card, index) => {
+          let diff = index - currentIndex;
+
+          // Visual properties
+          let scale, opacity, zIndex, translateX, translateY, rotateZ, filter;
+          let duration = 600;
+
+          if (diff === 0) {
+            // Center Card: Prominent and straight
+            scale = 1.1; // Reduced slightly from 1.2 for better proportion
+            opacity = 1;
+            zIndex = 100;
+            translateX = 0;
+            translateY = 0;
+            rotateZ = 0;
+            filter = 'grayscale(0%) blur(0px) brightness(1)';
+          } else {
+            // Side Cards: "Fan" or "Arc" arrangement
+            scale = 1 - Math.abs(diff) * 0.1;
+            opacity = 0.8;
+            zIndex = 50 - Math.abs(diff);
+
+            if (!isMobile) {
+              // Desktop: Fan "Wings" Layout
+              // Spread out more to reduce overlap, but keep the fan shape.
+              translateX = diff * 220;
+              translateY = Math.abs(diff) * 35;
+              rotateZ = diff * 10;
+              filter = 'grayscale(100%) brightness(0.7)';
+            } else {
+              // Mobile: Simple Horizontal Slider/Stack
+              translateX = diff * 105;
+              translateY = 0;
+              rotateZ = 0;
+              filter = 'grayscale(100%)';
+              if (Math.abs(diff) > 1) opacity = 0;
+            }
+          }
+
+          anime({
+            targets: card,
+            translateX: isMobile ? `${translateX}%` : translateX,
+            translateY: translateY,
+            scale: scale,
+            opacity: opacity,
+            zIndex: zIndex,
+            rotate: rotateZ, // Using 2D rotation for the fan look
+            rotateY: 0,      // Resetting 3D rotation if it was previously set
+            filter: filter,
+            easing: 'easeOutExpo',
+            duration: duration,
+            complete: () => {
+              isAnimating = false;
+              if (diff === 0) card.classList.add('active');
+              else card.classList.remove('active');
+            }
+          });
+        });
+      }
+
+      // Initialize
+      updateCarousel(0);
+
+      // Click Logic
+      cards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+          if (index === currentIndex) {
+            // Open Modal
+            const pid = card.getAttribute('data-project-id');
+            openProjectModal(pid);
+          } else {
+            // Center this card
+            updateCarousel(index);
+          }
+        });
+      });
+
+      // Controls
+      const nextBtn = document.querySelector('.next-btn');
+      const prevBtn = document.querySelector('.prev-btn');
+
+      if (nextBtn) nextBtn.addEventListener('click', () => {
+        if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
+        else updateCarousel(0);
+      });
+
+      if (prevBtn) prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) updateCarousel(currentIndex - 1);
+        else updateCarousel(totalCards - 1);
+      });
+
+      // Key Controls
+      document.addEventListener('keydown', (e) => {
+        // Only if project modal is not open
+        if (projectModal.style.display !== 'block') {
+          if (e.key === 'ArrowRight') {
+            if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
+            else updateCarousel(0);
+          }
+          if (e.key === 'ArrowLeft') {
+            if (currentIndex > 0) updateCarousel(currentIndex - 1);
+            else updateCarousel(totalCards - 1);
+          }
+        }
+      });
+
+      // Loop
+      let autoLoop = setInterval(() => {
+        if (projectModal.style.display !== 'block') {
+          if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
+          else updateCarousel(0);
+        }
+      }, 5000);
+
+      container.addEventListener('mouseenter', () => clearInterval(autoLoop));
+      container.addEventListener('mouseleave', () => {
+        autoLoop = setInterval(() => {
+          if (projectModal.style.display !== 'block') {
+            if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
+            else updateCarousel(0);
+          }
+        }, 5000);
+      });
+
+      // Simple Touch Swipe
+      let startX = 0;
+      container.addEventListener('touchstart', e => startX = e.changedTouches[0].screenX);
+      container.addEventListener('touchend', e => {
+        let endX = e.changedTouches[0].screenX;
+        if (startX - endX > 50) {
+          // Swipe Left -> Next
+          if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
+          else updateCarousel(0);
+        }
+        if (endX - startX > 50) {
+          // Swipe Right -> Prev
+          if (currentIndex > 0) updateCarousel(currentIndex - 1);
+          else updateCarousel(totalCards - 1);
+        }
+      });
+    });
+
+    // Close modals (Merged logic)
+    window.onclick = function (event) {
+      if (event.target == certModal) {
+        certModal.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+      if (event.target == projectModal) {
+        projectModal.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    }
+
+    // ===== Email Open Fix for Desktop (Unchanged JS) =====
+    function openDelayedMail(event) {
+      event.preventDefault();
+      const mailtoLink = "mailto:srharish05@gmail.com";
+      const targetUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=srharish05@gmail.com";
+
+      // Try opening the Gmail link first
+      const newWindow = window.open(targetUrl, '_blank');
+
+      if (newWindow) {
+        // Check if the window was successfully opened (not blocked by a pop-up blocker)
+        newWindow.focus();
+      } else {
+        // Fallback to the direct mailto: link if a new window couldn't be opened
+        window.location.href = mailtoLink;
+      }
+    }
+
+    // ===== Magic UI Background Logic =====
+    function initMagicBackground() {
+      const grid = document.querySelector('.magic-grid');
+      const spotlight = document.querySelector('.magic-spotlight');
+      const container = document.getElementById('magic-bg');
+
+      // 1. Grid Interaction (Parallax)
+      document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+
+        // Move grid slightly opposite to mouse
+        anime.set(grid, {
+          translateX: -x * 50,
+          translateY: -y * 50
+        });
+
+        // Update Spotlight Position
+        spotlight.style.setProperty('--x', `${e.clientX}px`);
+        spotlight.style.setProperty('--y', `${e.clientY}px`);
+      });
+
+      // 2. Random Beams (Shooting Stars / Data Flow effect)
+      function spawnBeam() {
+        const beam = document.createElement('div');
+        beam.classList.add('magic-beam');
+
+        // Randomize: Vertical or Horizontal
+        const isVertical = Math.random() > 0.5;
+
+        if (isVertical) {
+          beam.style.width = '2px';
+          beam.style.height = '150px';
+          beam.style.left = `${Math.random() * 100}%`;
+          beam.style.top = '-150px'; // Start above
+          container.appendChild(beam);
+
+          anime({
+            targets: beam,
+            translateY: window.innerHeight + 300,
+            opacity: [0, 1, 0],
+            easing: 'easeInOutQuad',
+            duration: anime.random(2000, 4000),
+            complete: () => beam.remove()
+          });
+        } else {
+          // Horizontal
+          beam.style.width = '150px';
+          beam.style.height = '2px';
+          beam.style.top = `${Math.random() * 100}%`;
+          beam.style.left = '-150px'; // Start left
+          container.appendChild(beam);
+
+          anime({
+            targets: beam,
+            translateX: window.innerWidth + 300,
+            opacity: [0, 1, 0],
+            easing: 'easeInOutQuad',
+            duration: anime.random(2000, 5000),
+            complete: () => beam.remove()
+          });
+        }
+      }
+
+      // Spawn beams regularly
+      setInterval(spawnBeam, 1500);
+    }
+
+    // ===== Research Section Logic =====
+    // Removed as per user request (no expansion needed)
+
+
+    document.addEventListener('DOMContentLoaded', initMagicBackground);
+  </script>
+</body>
+
+</html>
