@@ -1,929 +1,652 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harish S | Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Harish S — Engineer</title>
+<meta name="description" content="Harish S. Final-year ECE undergraduate. Ships production web, Android and AI systems." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- two requests, not one: if either family 404s the other still loads -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
 </head>
-
 <body>
-  <div id="magic-bg">
-    <div class="magic-grid"></div>
-    <div class="magic-spotlight"></div>
-    <!-- Beams will be added by JS -->
+
+<!-- ───────────── LOADER ───────────── -->
+<div class="loader" id="loader">
+  <div class="ld-head">
+    <span>DRAWING SHEET</span><span>HARISH&nbsp;S</span>
   </div>
-
-  <header class="navbar">
-    <div class="logo">Harish<span>.</span></div>
-
-    <div class="hamburger" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
+  <div class="ld-mid">
+    <span class="ld-num" id="loaderNum">000</span>
+    <div class="ld-bars">
+      <div class="ld-bar"><i id="loaderRule"></i></div>
+      <span class="ld-cap" id="loaderCap">PLOTTING GRID</span>
     </div>
+  </div>
+  <div class="ld-foot">
+    <span>SCALE 1:1</span><span>REV A</span><span>KARUR, TN</span>
+  </div>
+</div>
 
-    <nav id="navMenu">
-      <a href="#skills">Skills</a>
-      <a href="#achievements">Achievements</a>
-      <a href="#projects">Projects</a>
-      <a href="#research">Research</a>
-      <a href="#contact">Contact</a>
+<!-- background, bottom to top. Nothing with a motif tiles.
+     .topo   foxing — edge-weighted stains, the only moving layer
+     .regs   the construction — one drafting detail + two sweeps
+     .grain  paper tooth — procedural, static
+     .ticks  corner registration marks -->
+<div class="topo" id="topo" aria-hidden="true"></div>
+<div class="regs" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="ticks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div class="cursor" id="cursor"><span id="cursorLabel"></span></div>
+
+<!-- ───────────── TOP BAR ─────────────
+     Flush with the sheet at rest; detaches into a floating
+     callout box the moment you scroll. -->
+<header class="topbar" id="topbar">
+  <div class="tb-inner">
+    <a href="#top" class="tb-id" data-c="link">
+      <span class="tb-mark">HS</span>
+      <span class="tb-name">Harish&nbsp;S</span>
+    </a>
+
+    <!-- The current section is underscored the way you'd mark a
+         line on a drawing: two passes of a pencil, the second
+         laid over the first and not quite tracking it. The
+         strokes DRAW themselves left to right (see .nav-ul in
+         the stylesheet) instead of a rule sliding in.
+
+         Both paths carry pathLength="1" so the dash animation
+         is written once in CSS and needs no per-link
+         measurement, whatever the word's width. -->
+    <nav class="tb-nav" id="tbNav">
+      <a href="#about"      data-c="link">About
+        <svg class="nav-ul" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path class="nul-a" pathLength="1" d="M1.5,5.2 C 16,2.4 34,2.1 52,3.9 C 68,5.4 84,6.6 98.5,4.1"/><path class="nul-b" pathLength="1" d="M5,8.2 C 24,6.1 46,7.2 72,5.9"/></svg>
+      </a>
+      <a href="#experience" data-c="link">Experience
+        <svg class="nav-ul" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path class="nul-a" pathLength="1" d="M1.5,5.2 C 16,2.4 34,2.1 52,3.9 C 68,5.4 84,6.6 98.5,4.1"/><path class="nul-b" pathLength="1" d="M5,8.2 C 24,6.1 46,7.2 72,5.9"/></svg>
+      </a>
+      <a href="#work"       data-c="link">Work
+        <svg class="nav-ul" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path class="nul-a" pathLength="1" d="M1.5,5.2 C 16,2.4 34,2.1 52,3.9 C 68,5.4 84,6.6 98.5,4.1"/><path class="nul-b" pathLength="1" d="M5,8.2 C 24,6.1 46,7.2 72,5.9"/></svg>
+      </a>
+      <a href="#skills"     data-c="link">Skills
+        <svg class="nav-ul" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path class="nul-a" pathLength="1" d="M1.5,5.2 C 16,2.4 34,2.1 52,3.9 C 68,5.4 84,6.6 98.5,4.1"/><path class="nul-b" pathLength="1" d="M5,8.2 C 24,6.1 46,7.2 72,5.9"/></svg>
+      </a>
+      <a href="#contact"    data-c="link">Contact
+        <svg class="nav-ul" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path class="nul-a" pathLength="1" d="M1.5,5.2 C 16,2.4 34,2.1 52,3.9 C 68,5.4 84,6.6 98.5,4.1"/><path class="nul-b" pathLength="1" d="M5,8.2 C 24,6.1 46,7.2 72,5.9"/></svg>
+      </a>
     </nav>
-  </header>
 
-  <section class="hero">
-    <div class="container hero-content fade-in">
-      <div class="hero-main">
-        <div class="hero-text">
-          <p class="greeting">Hello, I'm</p>
-          <h1>Harish S</h1>
-          <p class="tagline">Electronics & Communication Engineering Student</p>
-
-          <p>
-            I'm an Electronics and Communication Engineering student passionate about integrating hardware and software
-            to create innovative, real-world solutions. My work spans IoT systems and full-stack web development, with a
-            focus on functionality, usability, and continuous learning.
-          </p>
-
-          <a href="Resume.pdf" download class="btn primary large">Download Resume</a>
-        </div>
-        <div class="hero-image">
-          <img src="me.jpg" alt="Harish S - Profile Picture" class="profile-pic" />
-        </div>
-      </div>
+    <div class="tb-right">
+      <a href="mailto:srharish05@gmail.com?subject=Opportunity%20for%20Harish%20S" class="tb-cta" data-c="open">Hire me</a>
+      <button class="tb-burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button>
     </div>
-  </section>
+  </div>
+</header>
 
-  <section id="skills" class="skills fade-in">
-    <div class="container">
-      <h2>Technical Skills</h2>
-      <div class="skills-grid">
-        <div class="skill-item">HTML</div>
-        <div class="skill-item">CSS </div>
-        <div class="skill-item">JavaScript</div>
-        <div class="skill-item">Java</div>
-      </div>
+<main id="top">
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="hero">
+
+  <!-- row 1 · callout strip -->
+  <div class="spec">
+    <div class="spec-col">
+      <span class="spec-k">Drawing</span>
+      <span class="spec-v">Portfolio / Rev A</span>
     </div>
-  </section>
-
-  <section id="achievements" class="achievements fade-in">
-    <div class="container">
-      <h2>Achievements</h2>
-      <div class="achievements-list">
-
-        <div class="achievement-item" data-cert-src="certificate1.jpg">
-          <div class="award-content clickable-cert">
-            <div class="award-image-container">
-              <img src="certificate1.jpg" alt="NPTEL Cloud Computing Certificate" />
-            </div>
-            <div class="award-text">
-              <h3>NPTEL: Cloud Computing (Elite)</h3>
-              <p>Completed 12-week course with an Elite score of 73% (Jul-Oct 2024).</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="achievement-item" data-cert-src="certificate2.jpg">
-          <div class="award-content clickable-cert">
-            <div class="award-image-container">
-              <img src="certificate2.jpg" alt="Wipro Infrastructure Engineering Internship Certificate" />
-            </div>
-            <div class="award-text">
-              <h3>Wipro Infrastructure Engineering Internship </h3>
-              <p>Successfully completed and certified 30 days internship with stipend at Wipro Infrastructure
-                Engineering </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="achievement-item" data-cert-src="certificate3.jpg">
-          <div class="award-content clickable-cert">
-            <div class="award-image-container">
-              <img src="certificate3.jpg" alt="JAVA Coding Event 1st Prize Certificate" />
-            </div>
-            <div class="award-text">
-              <h3>Coding Event</h3>
-              <p>Secured First place in JAVA programming event named "CODE IT"</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
+    <div class="spec-col">
+      <span class="spec-k">Location</span>
+      <span class="spec-v">Karur, Tamil Nadu</span>
     </div>
-  </section>
-
-  <section id="projects" class="projects-section fade-in">
-    <div class="project-section-container">
-      <div class="section-header">
-        <h2>Explore My Projects</h2>
-        <p>A showcase of technical innovation and creative solutions.</p>
-      </div>
-
-      <div class="carousel-wrapper">
-        <div class="carousel-container">
-
-          <!-- Card 1: MediNav -->
-          <div class="project-card" data-index="0" data-project-id="medinav">
-            <div class="card-visual">
-              <img src="project1.jpg" alt="MediNav Project" />
-              <div class="card-overlay"></div>
-              <div class="card-badge">IoT / Web App</div>
-            </div>
-            <div class="card-content">
-              <h3>MediNav</h3>
-              <p>Ambulance Navigation & Tracking System</p>
-              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
-            </div>
-          </div>
-
-          <!-- Card 2: Light Dipper -->
-          <div class="project-card" data-index="1" data-project-id="fuel-theft">
-            <div class="card-visual">
-              <img src="project2.jpg" alt="Automatic Light Dipper" />
-              <div class="card-overlay"></div>
-              <div class="card-badge">Embedded System</div>
-            </div>
-            <div class="card-content">
-              <h3>Smart Light Dipper</h3>
-              <p>Automated Headlight Control System</p>
-              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
-            </div>
-          </div>
-
-          <!-- Card 3: Steganography -->
-          <div class="project-card" data-index="2" data-project-id="steganography">
-            <div class="card-visual">
-              <img src="project3.jpg" alt="Steganography" />
-              <div class="card-overlay"></div>
-              <div class="card-badge">Cybersecurity</div>
-            </div>
-            <div class="card-content">
-              <h3>Steganography</h3>
-              <p>Secure Data Transmission Tool</p>
-              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
-            </div>
-          </div>
-
-          <!-- Card 4: MKCE Clubs -->
-          <div class="project-card" data-index="3" data-project-id="mkce-clubs">
-            <div class="card-visual">
-              <img src="project4.png" alt="MKCE Club Pages" />
-              <div class="card-overlay"></div>
-              <div class="card-badge">Web Dev</div>
-            </div>
-            <div class="card-content">
-              <h3>MKCE Club Pages</h3>
-              <p>Interactive College Event Portal</p>
-              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
-            </div>
-          </div>
-
-          <!-- Card 5: PathMakers -->
-          <div class="project-card" data-index="4" data-project-id="pathmakers">
-            <div class="card-visual">
-              <img src="project5.png" alt="PathMakers Project" />
-              <div class="card-overlay"></div>
-              <div class="card-badge">Web Dev</div>
-            </div>
-            <div class="card-content">
-              <h3>PathMakers</h3>
-              <p>Production-Ready Frontend Websites</p>
-              <div class="project-details-cue">View Details <i class="fas fa-arrow-right"></i></div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Navigation Controls -->
-        <div class="carousel-controls">
-          <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-          <div class="carousel-indicators"></div>
-          <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
-        </div>
-      </div>
+    <div class="spec-col">
+      <span class="spec-k">Status</span>
+      <span class="spec-v spec-live"><i class="blip"></i>Open to SDE roles</span>
     </div>
-  </section>
-
-  <section id="research" class="research-section fade-in">
-    <div class="container">
-      <div class="section-header">
-        <h2>Research & Publications</h2>
-        <p>Contributing to the academic community with innovative solutions</p>
-      </div>
-
-      <div class="research-card">
-        <div class="research-header">
-          <div class="research-badges">
-            <span class="res-badge status">Accepted for IEEE Conference Publication</span>
-            <span class="res-badge date">Publication scheduled – Feb 2026</span>
-          </div>
-          <h3>Smart Industrial Preventive Maintenance & Asset Tracking System</h3>
-          <p class="conference">2026 International Conference on Electronics and Renewable Systems (ICEARS), IEEE</p>
-          <p class="authors">Authors: Vasuki S, Harish S, Harish Raj R, Jagan T</p>
-          <p class="description">IoT-based industrial system using ESP32, vibration, temperature, and current sensing
-            with RFID authentication and MQTT cloud communication for real-time preventive maintenance and asset
-            tracking.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact" class="contact fade-in">
-    <div class="container">
-      <h2>Contact</h2>
-
-      <div class="wrapper">
-        <a href="https://www.linkedin.com/in/harish-s05" target="_blank" class="icon linkedin" aria-label="LinkedIn">
-          <i class="fab fa-linkedin-in"></i>
-        </a>
-        <a href="https://github.com/Srharish-05" target="_blank" class="icon github" aria-label="GitHub">
-          <i class="fab fa-github"></i>
-        </a>
-
-        <a href="javascript:void(0);" onclick="openDelayedMail(event)" class="icon email desktop-only"
-          aria-label="Email">
-          <i class="fa fa-envelope"></i>
-        </a>
-
-        <a href="mailto:srharish05@gmail.com" class="icon email mobile-only" aria-label="Email">
-          <i class="fa fa-envelope"></i>
-        </a>
-
-        <a href="tel:+919790555548" class="icon phone" aria-label="Phone">
-          <i class="fa fa-phone"></i>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <p>Harish S &bull; ECE Student</p>
-    <p>&copy; 2025 All rights reserved.</p>
-  </footer>
-
-  <div id="certModal" class="modal">
-    <span class="close-btn" id="closeCert">&times;</span>
-    <img class="modal-content" id="modalImage">
+    <a href="#work" class="seal" data-c="link" aria-label="Scroll to work">
+      <svg viewBox="0 0 200 200" class="seal-ring" aria-hidden="true">
+        <defs><path id="sealPath" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs>
+        <text><textPath href="#sealPath">SELECTED WORK · SELECTED WORK · </textPath></text>
+      </svg>
+      <span class="seal-arrow">↓</span>
+    </a>
   </div>
 
-  <div id="project-modal">
-    <div class="project-modal-content">
-      <span class="close-btn" id="closeProject">&times;</span>
-      <div id="project-details-content">
-      </div>
+  <!-- row 2 · the type, dimensioned like a drawing -->
+  <div class="hero-type-wrap">
+    <span class="plot-head" aria-hidden="true"></span>
+    <h1 class="hero-type">
+      <span class="ht-line" data-drift="-1"><span class="w" data-plot>HARISH</span></span>
+      <span class="ht-line ht-line-b" data-drift="1">
+        <span class="w w-alt" data-plot>S</span>
+        <span class="ht-sub">
+          <em>Electronics &amp; Communication</em>
+          <em>→ Software Engineering</em>
+        </span>
+      </span>
+    </h1>
+
+    <div class="dim" aria-hidden="true">
+      <span class="dim-cap"></span>
+      <span class="dim-line"></span>
+      <span class="dim-label">FINAL YEAR · B.E. ECE · 2023—2027</span>
+      <span class="dim-line"></span>
+      <span class="dim-cap"></span>
     </div>
   </div>
 
-  <!-- Anime.js Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-  <script>
-    // ===== Fade-in animation =====
-    const faders = document.querySelectorAll(".fade-in");
-    const appearOptions = {
-      threshold: 0.2,
-      rootMargin: "0px 0px -50px 0px"
-    };
-    const appearOnScroll = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("visible");
-        observer.unobserve(entry.target);
-      });
-    }, appearOptions);
-    faders.forEach(fader => appearOnScroll.observe(fader));
-
-    // ===== Mobile Menu Toggle (UPDATED Z-INDEX) =====
-    const hamburger = document.getElementById("hamburger");
-    const navMenu = document.getElementById("navMenu");
-
-    function toggleMenu() {
-      hamburger.classList.toggle("active");
-      navMenu.classList.toggle("open");
-
-      // CRITICAL FIX: Ensure nav is above other elements on mobile
-      if (navMenu.classList.contains('open')) {
-        navMenu.style.zIndex = '99'; // Lower than fixed navbar (100) but higher than content (0)
-      } else {
-        navMenu.style.zIndex = 'initial';
-      }
-    }
-
-    hamburger.addEventListener("click", toggleMenu);
-
-    // Close menu when a link is clicked
-    document.querySelectorAll('#navMenu a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          hamburger.classList.remove("active");
-          navMenu.classList.remove("open");
-          navMenu.style.zIndex = 'initial';
-        }
-      });
-    });
-
-    // ===== Hologram Animation Logic =====
-    // Global State for Hologram
-    let activeClone = null;
-    let activeProjection = null; // New separate reference
-    let originalItem = null;
-
-    const achievementItems = document.querySelectorAll('.achievement-item');
-
-    // Create Layout Overlay
-    const holoOverlay = document.createElement('div');
-    holoOverlay.style.cssText = `
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); z-index: 998; opacity: 0; pointer-events: none;
-      transition: opacity 0.5s ease; backdrop-filter: blur(5px);
-    `;
-    document.body.appendChild(holoOverlay);
-
-    // Close on overlay click
-    holoOverlay.addEventListener('click', () => {
-      if (activeClone) closeHologram();
-    });
-
-    achievementItems.forEach(item => {
-      // Click Handler
-      item.addEventListener('click', (e) => {
-        openHologram(item);
-        e.stopPropagation();
-      });
-    });
-
-    function openHologram(item) {
-      if (activeClone) return;
-
-      originalItem = item;
-      const rect = item.getBoundingClientRect();
-      const imgSrc = item.getAttribute('data-cert-src');
-
-      // 1. Create Clone (The Base)
-      activeClone = item.cloneNode(true);
-      activeClone.classList.add('hologram-clone');
-      activeClone.style.top = `${rect.top}px`;
-      activeClone.style.left = `${rect.left}px`;
-      activeClone.style.width = `${rect.width}px`;
-      activeClone.style.height = `${rect.height}px`;
-      activeClone.style.transition = 'none';
-      activeClone.style.margin = '0';
-
-      // Clean up clone content
-      activeClone.querySelectorAll('.hologram-projection').forEach(e => e.remove());
-      activeClone.innerHTML += `<div class="hologram-emitter-glow"></div>`; // Just the glow remains
-
-      document.body.appendChild(activeClone);
-
-      // 2. Create Projection (Separate Element)
-      activeProjection = document.createElement('div');
-      activeProjection.className = 'hologram-projection';
-      activeProjection.innerHTML = `
-        <div class="hologram-close-btn">×</div>
-        <img src="${imgSrc}" class="hologram-image" alt="Certificate">
-        <div class="hologram-scanline"></div>
-      `;
-      document.body.appendChild(activeProjection);
-
-      // Close Button
-      activeProjection.querySelector('.hologram-close-btn').addEventListener('click', (e) => {
-        closeHologram();
-      });
-
-      // 3. Hide Original & Show Overlay
-      item.style.opacity = '0';
-      if (holoOverlay) {
-        holoOverlay.style.opacity = '1';
-        holoOverlay.style.pointerEvents = 'auto';
-      }
-
-      // 4. Animate Both
-      const targetWidth = 300;
-      const targetHeight = 20;
-      const targetX = (window.innerWidth - targetWidth) / 2;
-      const targetY = window.innerHeight - 100;
-
-      const timeline = anime.timeline({ easing: 'easeOutExpo' });
-
-      // Animate Clone (Base)
-      timeline.add({
-        targets: activeClone,
-        top: targetY,
-        left: targetX,
-        width: targetWidth,
-        height: targetHeight,
-        backgroundColor: '#1a1a1d',
-        borderColor: '#00B8D9',
-        boxShadow: '0 0 40px rgba(0, 184, 217, 0.4)',
-        rotateX: 60,
-        duration: 800
-      });
-
-      // Hide content in base
-      anime({
-        targets: activeClone.querySelector('.award-content'),
-        opacity: 0,
-        duration: 200,
-        easing: 'linear'
-      });
-
-      // Animate Projection (Upwards from base)
-      timeline.add({
-        targets: activeProjection,
-        height: ['0vh', '70vh'],
-        opacity: [0, 1],
-        duration: 1000,
-        offset: '-=500' // Overlap with base arrival
-      });
-
-      // Fade in Image
-      timeline.add({
-        targets: activeProjection.querySelector('.hologram-image'),
-        opacity: [0, 1],
-        translateY: [50, 0],
-        duration: 800,
-        offset: '-=700'
-      });
-
-      // Base Glow
-      timeline.add({
-        targets: activeClone.querySelector('.hologram-emitter-glow'),
-        opacity: [0, 1],
-        duration: 500,
-        offset: '-=800'
-      });
-    }
-
-    function closeHologram() {
-      if (!activeClone || !originalItem) return;
-
-      const rect = originalItem.getBoundingClientRect();
-
-      const timeline = anime.timeline({ easing: 'easeInQuad' });
-
-      // Collapse Projection
-      if (activeProjection) {
-        timeline.add({
-          targets: activeProjection,
-          height: 0,
-          opacity: 0,
-          duration: 300
-        });
-      }
-
-      // Restore Base
-      timeline.add({
-        targets: activeClone,
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-        rotateX: 0,
-        backgroundColor: '#38383a',
-        borderColor: 'transparent',
-        boxShadow: 'none',
-        duration: 600,
-        easing: 'easeOutCubic',
-        complete: () => {
-          if (activeClone) activeClone.remove();
-          if (activeProjection) activeProjection.remove();
-          activeClone = null;
-          activeProjection = null;
-          if (originalItem) originalItem.style.opacity = '1';
-          originalItem = null;
-        }
-      });
-
-      // Restore Content
-      anime({
-        targets: activeClone.querySelector('.award-content'),
-        opacity: 1,
-        delay: 200,
-        duration: 300
-      });
-
-      // Hide Overlay
-      if (holoOverlay) {
-        holoOverlay.style.opacity = '0';
-        holoOverlay.style.pointerEvents = 'none';
-      }
-    }
-
-    // Keep the "View Modal" logic accessible if the user clicks the projected image?
-    // User request implied changing interaction to hologram, not keeping the modal. 
-    // "Interactive hologram reveal". Modal logic for full size view is removed from this interaction flow 
-    // as per "Modify only the interaction animation... to create a hologram-style projection".
-    // But we still have the modal HTML. Let's leave the modal element alone but disconnect it 
-    // from the card click since the card click now triggers the hologram.
-
-    // Legacy modal refs can stay or be ignored.
-    const modalImage = document.getElementById("modalImage");
-    const certModal = document.getElementById("certModal");
-    const closeCert = document.getElementById("closeCert");
-
-    // If the user really wants to see the full image, maybe clicking the *projection* opens the modal?
-    // Let's add that for usability.
-
-    /* 
-    const clickableCerts = document.querySelectorAll(".clickable-cert");
-    clickableCerts.forEach(cert => { ... }); 
-    */
-
-    // REPLACED ABOVE WITH HOLOGRAM LOGIC. 
-
-    closeCert.onclick = function () {
-      certModal.style.display = "none";
-      document.body.style.overflow = "auto";
-    }
-
-    // ===== Project Modal Logic & Cinematic Carousel =====
-    const projectModal = document.getElementById("project-modal");
-    const projectDetailsContent = document.getElementById("project-details-content");
-    const closeProject = document.getElementById("closeProject");
-
-    // Data Object
-    const projectData = {
-      "medinav": {
-        title: "MediNav – Ambulance Navigation System",
-        category: "IoT / Full-Stack Web App",
-        description: "MediNav is an IoT-based intelligent ambulance navigation and management system designed to reduce emergency response delays. It integrates GPS, GSM, and Wi-Fi modules with an Arduino microcontroller to track ambulances in real time and communicate with hospitals and users. The web application, built with Node.js, Express, and Supabase, enables users to request ambulances and drivers to accept or decline requests. It also provides live map updates using Leaflet, displaying ambulance locations, traffic congestion, and the nearest hospitals for faster routing.",
-        tech: ["Node.js", "Express", "Supabase", "Leaflet (Maps)", "IoT (Arduino, Microcontrollers)", "GPS/GSM Modules"],
-        github_link: "https://srharish-05.github.io/MediNav/"
-      },
-      "fuel-theft": { // Kept ID for consistency with image mapping, but represents Light Dipper
-        title: "Automatic Light Upper Dipper",
-        category: "Embedded System",
-        description: "A smart, cost-effective embedded system designed to improve night driving safety. It uses an **LDR (Light Dependent Resistor)** sensor to detect the intensity of light from oncoming vehicles. When high light intensity is detected, a **Relay control mechanism** automatically switches the vehicle's headlight from high beam to low beam. This prevents temporary blindness for the approaching driver, significantly reducing the risk of accidents. The system uses basic electronics principles and a microcontroller for simple, reliable automation.",
-        tech: ["Arduino", "LDR Sensor", "Relay Module", "Basic C++ for Microcontrollers", "Embedded Systems Design"]
-      },
-      "steganography": {
-        title: "Steganography Project",
-        category: "Security / Cybersecurity",
-        description: "This project was developed during a certified internship under the Edunet Foundation in collaboration with IBM SkillsBuild, focusing on secure data transmission using steganography techniques. It hides confidential information within digital media to ensure imperceptible and secure communication. The approach strengthens information security and minimizes the risk of data interception over public networks. ",
-        tech: ["Steganography Techniques", "Information Security Fundamentals", "Secure Data Hiding", "Python Programming", "Cybersecurity Basics"],
-        github_link: "https://github.com/Srharish-05/EdunetStego"
-      },
-      "mkce-clubs": {
-        title: "MKCE Club Pages",
-        category: "Web Development",
-        description: "Designed and developed responsive college club web pages focusing on clear content structure, smooth animations, and user-friendly navigation. The pages effectively present club information, events, and announcements for students across all departments.",
-        tech: ["HTML", "CSS", "JavaScript", "Anime.js", "Responsive Web Design"],
-        github_link: "https://clubs.mkce.ac.in/"
-      },
-      "pathmakers": {
-        title: "PathMakers – Frontend Web Projects",
-        category: "Web Development",
-        description: "PathMakers represents a collection of responsive, production-ready websites developed using modern frontend technologies. The projects include PlumberPro (a professional plumbing services website), ProSport (a sports performance and fitness platform), and ElectroGlass (a tech components e-commerce interface). Each website was built with a focus on clean design, responsive layouts, cross-browser compatibility, and optimized user experience.",
-        tech: ["HTML5", "CSS3", "JavaScript", "Responsive Web Design", "Cross-Browser Compatibility", "UI/UX Best Practices"],
-        more_links: [
-          { label: "Electroglass", url: "https://nareshdharmaraj.github.io/Electroglass/" },
-          { label: "Prosport", url: "https://nareshdharmaraj.github.io/Prosport/" },
-          { label: "Plumberpro", url: "https://nareshdharmaraj.github.io/plumberpro/" }
-        ]
-      }
-    };
-
-    function openProjectModal(projectId) {
-      const data = projectData[projectId];
-      if (!data) return;
-
-      let techPills = data.tech.map(t => `<div class="skill-item">${t}</div>`).join('');
-
-      let projectButton = '';
-      if (data.github_link && data.github_link !== 'N/A') {
-        const cleanLink = data.github_link.replace(/[\(\)]/g, '');
-        let buttonText = cleanLink.includes('github.com') ? 'View Project on GitHub' : 'View Live Project';
-        let iconClass = cleanLink.includes('github.com') ? 'fab fa-github' : 'fas fa-external-link-alt';
-
-        projectButton = `<a href="${cleanLink}" target="_blank" class="btn primary small project-github-btn">
-                                <i class="${iconClass}"></i> ${buttonText}
-                            </a>`;
-      }
-
-      let extraLinksHtml = '';
-      if (data.more_links) {
-        extraLinksHtml = '<div class="project-links" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">';
-        data.more_links.forEach(link => {
-          extraLinksHtml += `<a href="${link.url}" target="_blank" class="btn primary small"><i class="fas fa-external-link-alt"></i> ${link.label}</a>`;
-        });
-        extraLinksHtml += '</div>';
-      }
-
-      projectDetailsContent.innerHTML = `
-            <h3>${data.title}</h3>
-            <span class="detail-category">${data.category}</span>
-            <p>${data.description}</p>
-            ${projectButton} 
-            ${extraLinksHtml}
-            <p style="font-weight: 600; color: var(--color-light); margin-top: 30px; margin-bottom: 10px;">Technologies Used:</p>
-            <div class="tech-pills">${techPills}</div>
-        `;
-
-      projectModal.style.display = 'block';
-      document.body.style.overflow = "hidden";
-    }
-
-    closeProject.onclick = function (event) {
-      event.stopPropagation();
-      projectModal.style.display = "none";
-      document.body.style.overflow = "auto";
-    }
-
-    // Anime.js Carousel Logic
-    document.addEventListener('DOMContentLoaded', () => {
-      const cards = document.querySelectorAll('.project-card');
-      if (cards.length === 0) return; // Guard clause
-
-      const container = document.querySelector('.carousel-container');
-      const indicatorsContainer = document.querySelector('.carousel-indicators');
-      let currentIndex = 0;
-      let isAnimating = false;
-      const totalCards = cards.length;
-
-      // Init Indicators
-      if (indicatorsContainer) {
-        indicatorsContainer.innerHTML = '';
-        cards.forEach((_, index) => {
-          const dot = document.createElement('div');
-          dot.classList.add('indicator-dot');
-          if (index === 0) dot.classList.add('active');
-          dot.addEventListener('click', () => {
-            if (!isAnimating && index !== currentIndex) {
-              updateCarousel(index);
-            }
-          });
-          indicatorsContainer.appendChild(dot);
-        });
-      }
-
-      const indicators = document.querySelectorAll('.indicator-dot');
-
-      function updateIndicators(index) {
-        indicators.forEach((dot, i) => {
-          if (i === index) dot.classList.add('active');
-          else dot.classList.remove('active');
-        });
-      }
-
-      function updateCarousel(newIndex) {
-        if (isAnimating) return;
-        isAnimating = true;
-        currentIndex = newIndex;
-        updateIndicators(currentIndex);
-
-        const isMobile = window.innerWidth <= 768;
-
-        cards.forEach((card, index) => {
-          let diff = index - currentIndex;
-
-          // Visual properties
-          let scale, opacity, zIndex, translateX, translateY, rotateZ, filter;
-          let duration = 600;
-
-          if (diff === 0) {
-            // Center Card: Prominent and straight
-            scale = 1.1; // Reduced slightly from 1.2 for better proportion
-            opacity = 1;
-            zIndex = 100;
-            translateX = 0;
-            translateY = 0;
-            rotateZ = 0;
-            filter = 'grayscale(0%) blur(0px) brightness(1)';
-          } else {
-            // Side Cards: "Fan" or "Arc" arrangement
-            scale = 1 - Math.abs(diff) * 0.1;
-            opacity = 0.8;
-            zIndex = 50 - Math.abs(diff);
-
-            if (!isMobile) {
-              // Desktop: Fan "Wings" Layout
-              // Spread out more to reduce overlap, but keep the fan shape.
-              translateX = diff * 220;
-              translateY = Math.abs(diff) * 35;
-              rotateZ = diff * 10;
-              filter = 'grayscale(100%) brightness(0.7)';
-            } else {
-              // Mobile: Simple Horizontal Slider/Stack
-              translateX = diff * 105;
-              translateY = 0;
-              rotateZ = 0;
-              filter = 'grayscale(100%)';
-              if (Math.abs(diff) > 1) opacity = 0;
-            }
-          }
-
-          anime({
-            targets: card,
-            translateX: isMobile ? `${translateX}%` : translateX,
-            translateY: translateY,
-            scale: scale,
-            opacity: opacity,
-            zIndex: zIndex,
-            rotate: rotateZ, // Using 2D rotation for the fan look
-            rotateY: 0,      // Resetting 3D rotation if it was previously set
-            filter: filter,
-            easing: 'easeOutExpo',
-            duration: duration,
-            complete: () => {
-              isAnimating = false;
-              if (diff === 0) card.classList.add('active');
-              else card.classList.remove('active');
-            }
-          });
-        });
-      }
-
-      // Initialize
-      updateCarousel(0);
-
-      // Click Logic
-      cards.forEach((card, index) => {
-        card.addEventListener('click', () => {
-          if (index === currentIndex) {
-            // Open Modal
-            const pid = card.getAttribute('data-project-id');
-            openProjectModal(pid);
-          } else {
-            // Center this card
-            updateCarousel(index);
-          }
-        });
-      });
-
-      // Controls
-      const nextBtn = document.querySelector('.next-btn');
-      const prevBtn = document.querySelector('.prev-btn');
-
-      if (nextBtn) nextBtn.addEventListener('click', () => {
-        if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
-        else updateCarousel(0);
-      });
-
-      if (prevBtn) prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) updateCarousel(currentIndex - 1);
-        else updateCarousel(totalCards - 1);
-      });
-
-      // Key Controls
-      document.addEventListener('keydown', (e) => {
-        // Only if project modal is not open
-        if (projectModal.style.display !== 'block') {
-          if (e.key === 'ArrowRight') {
-            if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
-            else updateCarousel(0);
-          }
-          if (e.key === 'ArrowLeft') {
-            if (currentIndex > 0) updateCarousel(currentIndex - 1);
-            else updateCarousel(totalCards - 1);
-          }
-        }
-      });
-
-      // Loop
-      let autoLoop = setInterval(() => {
-        if (projectModal.style.display !== 'block') {
-          if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
-          else updateCarousel(0);
-        }
-      }, 5000);
-
-      container.addEventListener('mouseenter', () => clearInterval(autoLoop));
-      container.addEventListener('mouseleave', () => {
-        autoLoop = setInterval(() => {
-          if (projectModal.style.display !== 'block') {
-            if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
-            else updateCarousel(0);
-          }
-        }, 5000);
-      });
-
-      // Simple Touch Swipe
-      let startX = 0;
-      container.addEventListener('touchstart', e => startX = e.changedTouches[0].screenX);
-      container.addEventListener('touchend', e => {
-        let endX = e.changedTouches[0].screenX;
-        if (startX - endX > 50) {
-          // Swipe Left -> Next
-          if (currentIndex < totalCards - 1) updateCarousel(currentIndex + 1);
-          else updateCarousel(0);
-        }
-        if (endX - startX > 50) {
-          // Swipe Right -> Prev
-          if (currentIndex > 0) updateCarousel(currentIndex - 1);
-          else updateCarousel(totalCards - 1);
-        }
-      });
-    });
-
-    // Close modals (Merged logic)
-    window.onclick = function (event) {
-      if (event.target == certModal) {
-        certModal.style.display = "none";
-        document.body.style.overflow = "auto";
-      }
-      if (event.target == projectModal) {
-        projectModal.style.display = "none";
-        document.body.style.overflow = "auto";
-      }
-    }
-
-    // ===== Email Open Fix for Desktop (Unchanged JS) =====
-    function openDelayedMail(event) {
-      event.preventDefault();
-      const mailtoLink = "mailto:srharish05@gmail.com";
-      const targetUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=srharish05@gmail.com";
-
-      // Try opening the Gmail link first
-      const newWindow = window.open(targetUrl, '_blank');
-
-      if (newWindow) {
-        // Check if the window was successfully opened (not blocked by a pop-up blocker)
-        newWindow.focus();
-      } else {
-        // Fallback to the direct mailto: link if a new window couldn't be opened
-        window.location.href = mailtoLink;
-      }
-    }
-
-    // ===== Magic UI Background Logic =====
-    function initMagicBackground() {
-      const grid = document.querySelector('.magic-grid');
-      const spotlight = document.querySelector('.magic-spotlight');
-      const container = document.getElementById('magic-bg');
-
-      // 1. Grid Interaction (Parallax)
-      document.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-
-        // Move grid slightly opposite to mouse
-        anime.set(grid, {
-          translateX: -x * 50,
-          translateY: -y * 50
-        });
-
-        // Update Spotlight Position
-        spotlight.style.setProperty('--x', `${e.clientX}px`);
-        spotlight.style.setProperty('--y', `${e.clientY}px`);
-      });
-
-      // 2. Random Beams (Shooting Stars / Data Flow effect)
-      function spawnBeam() {
-        const beam = document.createElement('div');
-        beam.classList.add('magic-beam');
-
-        // Randomize: Vertical or Horizontal
-        const isVertical = Math.random() > 0.5;
-
-        if (isVertical) {
-          beam.style.width = '2px';
-          beam.style.height = '150px';
-          beam.style.left = `${Math.random() * 100}%`;
-          beam.style.top = '-150px'; // Start above
-          container.appendChild(beam);
-
-          anime({
-            targets: beam,
-            translateY: window.innerHeight + 300,
-            opacity: [0, 1, 0],
-            easing: 'easeInOutQuad',
-            duration: anime.random(2000, 4000),
-            complete: () => beam.remove()
-          });
-        } else {
-          // Horizontal
-          beam.style.width = '150px';
-          beam.style.height = '2px';
-          beam.style.top = `${Math.random() * 100}%`;
-          beam.style.left = '-150px'; // Start left
-          container.appendChild(beam);
-
-          anime({
-            targets: beam,
-            translateX: window.innerWidth + 300,
-            opacity: [0, 1, 0],
-            easing: 'easeInOutQuad',
-            duration: anime.random(2000, 5000),
-            complete: () => beam.remove()
-          });
-        }
-      }
-
-      // Spawn beams regularly
-      setInterval(spawnBeam, 1500);
-    }
-
-    // ===== Research Section Logic =====
-    // Removed as per user request (no expansion needed)
-
-
-    document.addEventListener('DOMContentLoaded', initMagicBackground);
-  </script>
+  <!-- row 3 · foot -->
+  <div class="hero-foot">
+    <p class="hero-bio">
+      I build things that reach people. A faculty platform running on Render, an Android
+      lending app <a href="https://play.google.com/store/apps/details?id=com.vasoolx.app" target="_blank" rel="noopener" data-c="open">live on the Play&nbsp;Store</a>,
+      club pages used by 4,000&nbsp;students, and a medical agent where a fine-tuned LLaMA routes
+      intent while a deterministic Python core owns everything that could hurt someone.
+    </p>
+
+    <div class="hero-links">
+      <a href="mailto:srharish05@gmail.com?subject=Hello%20Harish" class="hl" data-c="open"><span>Email</span><i>↗</i></a>
+      <a href="https://github.com/srharish-05" target="_blank" rel="noopener" class="hl" data-c="open"><span>GitHub</span><i>↗</i></a>
+      <a href="https://linkedin.com/in/harish-s05" target="_blank" rel="noopener" class="hl" data-c="open"><span>LinkedIn</span><i>↗</i></a>
+      <a href="tel:+919790555548" class="hl" data-c="open"><span>+91 97905 55548</span><i>↗</i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TICKER ═══════════ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span>JAVA</span><b>+</b><span>NODE.JS</span><b>+</b><span>MONGODB</span><b>+</b><span>FIREBASE</span><b>+</b><span>PYTHON</span><b>+</b><span>JAVASCRIPT</span><b>+</b><span>C++</span><b>+</b><span>REST</span><b>+</b><span>DSA</span><b>+</b>
+  </div>
+</div>
+
+<!-- ═══════════ 01 ABOUT ═══════════ -->
+<section class="sec" id="about">
+  <div class="sheet-head">
+    <span class="sh-no">01</span>
+    <h2 class="sh-name">About</h2>
+    <span class="sh-rule"></span>
+    <span class="sh-meta">Sheet 01 / 05</span>
+  </div>
+
+  <div class="ab-pair">
+    <p class="readalong" data-readalong>
+      I'm a final-year Electronics &amp; Communication undergraduate at M. Kumarasamy College of
+      Engineering, but my work has lived in software since my first internship. Across four of
+      them the stack kept changing: Python encryption tooling, client-facing production sites,
+      twenty-plus releases of a live website with a custom REST API and Razorpay wired in, a
+      Kotlin and Firebase app published on the Play Store, a Node and MongoDB system deployed
+      and in daily use, a fine-tuned LLaMA 3.1 model sitting behind a deterministic backend. Picking up the next one has never been the hard part. What I care about is the
+      part most student projects skip: the thing actually being used by someone who isn't me.
+    </p>
+
+    <!-- The plate already carried name, degree, college and
+         coordinates — it was an identity plate without the
+         identity. The portrait takes the place the "HS" mark
+         held, and the mark survives as a corner stamp. The
+         photo has one state and keeps it — no hover reveal. -->
+    <aside class="plate plate-id">
+      <span class="plate-spine">ECE → SOFTWARE</span>
+      <div class="plate-body">
+        <figure class="pid">
+          <div class="pid-frame">
+            <img class="pid-img" src="assets/img/harish.jpg"
+                 alt="Harish S"
+                 width="1106" height="1209"
+                 loading="lazy" decoding="async">
+            <i class="pid-tick" aria-hidden="true"></i>
+            <i class="pid-tick" aria-hidden="true"></i>
+            <i class="pid-tick" aria-hidden="true"></i>
+            <i class="pid-tick" aria-hidden="true"></i>
+          </div>
+          <figcaption class="pid-cap">Fig. 01 — Harish S</figcaption>
+        </figure>
+        <span class="plate-k">Harish S</span>
+        <span class="plate-k">B.E. ECE · 2023—27</span>
+        <span class="plate-k">M. Kumarasamy College</span>
+      </div>
+      <div class="plate-foot"><span>Karur, IN</span></div>
+    </aside>
+  </div>
+
+  <div class="facts">
+    <div class="fact" data-c="view">
+      <span class="fact-n" data-count="7.64" data-dec="2">0</span>
+      <span class="fact-k">CGPA — through 6th semester</span>
+    </div>
+    <div class="fact" data-c="view">
+      <span class="fact-n" data-count="4000" data-suffix="+">0</span>
+      <span class="fact-k">Students on the club pages</span>
+    </div>
+    <div class="fact" data-c="view">
+      <span class="fact-n" data-count="4">0</span>
+      <span class="fact-k">Internships completed</span>
+    </div>
+    <div class="fact" data-c="view">
+      <span class="fact-n" data-count="20" data-suffix="+">0</span>
+      <span class="fact-k">Releases shipped at FrameCape</span>
+    </div>
+  </div>
+
+  <div class="aside-note">
+    <span class="an-k">Note</span>
+    <p>Currently Full Stack Developer at FrameCape — building with Claude Code and Copilot
+       in the loop, not in the driver's seat.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 02 EXPERIENCE — scroll-scrub timeline ═══════════ -->
+<section class="sec" id="experience">
+  <div class="sheet-head">
+    <span class="sh-no">02</span>
+    <h2 class="sh-name">Experience</h2>
+    <span class="sh-rule"></span>
+    <span class="sh-meta">Sheet 02 / 05</span>
+  </div>
+
+  <div class="tl" id="tl">
+    <!-- the rail draws itself as you scroll -->
+    <div class="tl-rail" aria-hidden="true"><i id="railFill"></i></div>
+
+    <article class="tl-item tl-l" data-c="view">
+      <span class="tl-node" aria-hidden="true"></span>
+      <span class="tl-leader" aria-hidden="true"></span>
+      <div class="tl-card">
+        <header class="tl-top">
+          <span class="tl-no">01</span>
+          <span class="tl-date">2025 — Present</span>
+        </header>
+        <h3 class="tl-role">Full Stack Developer</h3>
+        <p class="tl-org">FrameCape <i class="tl-live">current</i></p>
+        <ul class="tl-list">
+          <li>Built responsive interfaces for <b>framecape.com</b> in HTML5, CSS3, JavaScript and Bootstrap.</li>
+          <li>Designed a custom <b>REST API</b>, verified in Postman, serving internship and blog content.</li>
+          <li>Implemented full CRUD for student internship certificates and blog posts.</li>
+          <li>Worked with a <b>3-developer team</b> across 20+ updates and integrated <b>Razorpay</b> for online booking.</li>
+        </ul>
+        <div class="tl-tags"><span>REST</span><span>Bootstrap</span><span>Razorpay</span><span>Postman</span></div>
+      </div>
+    </article>
+
+    <article class="tl-item tl-r" data-c="view">
+      <span class="tl-node" aria-hidden="true"></span>
+      <span class="tl-leader" aria-hidden="true"></span>
+      <div class="tl-card">
+        <header class="tl-top">
+          <span class="tl-no">02</span>
+          <span class="tl-date">Jan — Mar 2026</span>
+        </header>
+        <h3 class="tl-role">Frontend Developer</h3>
+        <p class="tl-org">PathMakers</p>
+        <ul class="tl-list">
+          <li>Shipped <b>3 production client websites</b> — PlumberPro, ProSport, ElectroGlass.</li>
+          <li>Used AI-assisted tooling (Claude, GitHub Copilot) to compress delivery time and raise code quality.</li>
+        </ul>
+        <div class="tl-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Client work</span></div>
+      </div>
+    </article>
+
+    <article class="tl-item tl-l" data-c="view">
+      <span class="tl-node" aria-hidden="true"></span>
+      <span class="tl-leader" aria-hidden="true"></span>
+      <div class="tl-card">
+        <header class="tl-top">
+          <span class="tl-no">03</span>
+          <span class="tl-date">Jul — Aug 2025</span>
+        </header>
+        <h3 class="tl-role">Quality Approval Intern</h3>
+        <p class="tl-org">Wipro Infrastructure Engineering</p>
+        <ul class="tl-list">
+          <li>Learned inspection and approval workflows inside infrastructure engineering.</li>
+          <li>Worked with the quality team on standard operating procedures and compliance requirements.</li>
+        </ul>
+        <div class="tl-tags"><span>QA</span><span>SOP</span><span>Compliance</span></div>
+      </div>
+    </article>
+
+    <article class="tl-item tl-r" data-c="view">
+      <span class="tl-node" aria-hidden="true"></span>
+      <span class="tl-leader" aria-hidden="true"></span>
+      <div class="tl-card">
+        <header class="tl-top">
+          <span class="tl-no">04</span>
+          <span class="tl-date">Jan — Feb 2025</span>
+        </header>
+        <h3 class="tl-role">Cyber Security Intern</h3>
+        <p class="tl-org">Internship</p>
+        <ul class="tl-list">
+          <li>Customised a Python encryption/decryption tool to embed and retrieve messages hidden inside images.</li>
+          <li>Hands-on exposure to data encryption and secure transmission fundamentals.</li>
+        </ul>
+        <div class="tl-tags"><span>Python</span><span>Steganography</span><span>Crypto</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ═══════════ 03 WORK — stacked cards ═══════════ -->
+<section class="sec" id="work">
+  <div class="sheet-head">
+    <span class="sh-no">03</span>
+    <h2 class="sh-name">Selected Work</h2>
+    <span class="sh-rule"></span>
+    <span class="sh-meta">Sheet 03 / 05</span>
+  </div>
+
+  <div class="stack" id="stack">
+
+    <article class="pj" data-c="open">
+      <div class="pj-l">
+        <span class="pj-no">01</span>
+        <h3 class="pj-title">VasoolX</h3>
+        <p class="pj-kind">Android · Finance &amp; debt management</p>
+        <p class="pj-txt">Lenders track loans, automate collection schedules and watch cash flow
+          move in real time. Firestore drives live sync across a multi-module codebase; built and
+          published to the Play Store.</p>
+        <div class="pj-tags"><span>Android</span><span>Firebase Firestore</span><span>Real-time</span></div>
+        <a class="pj-cta" href="https://play.google.com/store/apps/details?id=com.vasoolx.app" target="_blank" rel="noopener"><span>Play Store</span><i>↗</i></a>
+      </div>
+      <div class="pj-r pj-r-1">
+        <figure class="pj-shot">
+          <img src="assets/img/vasoolx.png" alt="VasoolX — Play Store listing graphic: collect today, grow tomorrow"
+               width="520" height="293" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </article>
+
+    <article class="pj" data-c="open">
+      <div class="pj-l">
+        <span class="pj-no">02</span>
+        <h3 class="pj-title">Aura AI</h3>
+        <p class="pj-kind">Remote patient monitoring · Hybrid LLM</p>
+        <p class="pj-txt">A fine-tuned <b>LLaMA 3.1 8B</b> handles intent routing. A deterministic
+          Python backend owns database validation, hardware state and emergency overrides — because
+          the model is not allowed to be the last word on anything clinical. Latency surfaced on a
+          live dashboard.</p>
+        <div class="pj-tags"><span>LLaMA 3.1 8B</span><span>Python</span><span>Fine-tuning</span></div>
+        <a class="pj-cta" href="https://github.com/Srharish-05/AI-RPM_Chat_angent" target="_blank" rel="noopener"><span>GitHub</span><i>↗</i></a>
+      </div>
+      <div class="pj-r pj-r-2">
+        <figure class="pj-shot">
+          <img src="assets/img/aura-ai.png" alt="Aura AI — Unsloth supervised fine-tuning run of LLaMA 3.1 8B in Colab, training loss falling from 3.66 to 0.40 over 70 steps"
+               width="1280" height="599" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </article>
+
+    <article class="pj" data-c="open">
+      <div class="pj-l">
+        <span class="pj-no">03</span>
+        <h3 class="pj-title">Faculty Alteration System</h3>
+        <p class="pj-kind">Full-stack web · Node.js + MongoDB</p>
+        <p class="pj-txt">Role-based dashboards for admin and faculty covering leave alteration,
+          tracking, notifications and a faculty directory. I designed the MongoDB data model and
+          deployed it on Render.</p>
+        <div class="pj-tags"><span>Node.js</span><span>MongoDB</span><span>Render</span></div>
+        <a class="pj-cta" href="https://github.com/Srharish-05/Faculty_alteraion" target="_blank" rel="noopener"><span>GitHub</span><i>↗</i></a>
+      </div>
+      <div class="pj-r pj-r-3">
+        <figure class="pj-shot">
+          <img src="assets/img/faculty-alteration.png" alt="Faculty Alteration System — leave and substitute portal with staff sign-in"
+               width="1517" height="863" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </article>
+
+    <article class="pj" data-c="open">
+      <div class="pj-l">
+        <span class="pj-no">04</span>
+        <h3 class="pj-title">MediNav</h3>
+        <p class="pj-kind">Smart ambulance navigation · IoT</p>
+        <p class="pj-txt">Ambulance booking with real-time location tracking that routes a patient
+          to the nearest available hospital rather than the nearest listed one.</p>
+      </div>
+      <div class="pj-r pj-r-4">
+        <figure class="pj-shot">
+          <img src="assets/img/medinav.jpg" alt="MediNav — smart ambulance booking and nearest-hospital navigation"
+               width="898" height="481" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </article>
+
+    <article class="pj" data-c="open">
+      <div class="pj-l">
+        <span class="pj-no">05</span>
+        <h3 class="pj-title">MKCE Club Pages</h3>
+        <p class="pj-kind">Official college club sites · 4,000+ users</p>
+        <p class="pj-txt">Responsive club pages with events, team and gallery sections — built
+          cross-device first and in active use across campus.</p>
+        <div class="pj-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+        <a class="pj-cta" href="https://clubs.mkce.ac.in/" target="_blank" rel="noopener"><span>Live site</span><i>↗</i></a>
+      </div>
+      <div class="pj-r pj-r-5">
+        <figure class="pj-shot">
+          <img src="assets/img/mkce-clubs.png" alt="MKCE Arroh student club page with Google, Mobile App, Unstop Igniters and IEEE club cards"
+               width="1896" height="867" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </article>
+
+    <article class="pj" data-c="open">
+      <div class="pj-l">
+        <span class="pj-no">06</span>
+        <h3 class="pj-title"><a class="pj-link" href="https://nareshdharmaraj.github.io/plumberpro/" target="_blank" rel="noopener">PlumberPro</a> · <a class="pj-link" href="https://nareshdharmaraj.github.io/Prosport/" target="_blank" rel="noopener">ProSport</a> · <a class="pj-link" href="https://nareshdharmaraj.github.io/Electroglass/" target="_blank" rel="noopener">ElectroGlass</a></h3>
+        <p class="pj-kind">Three client sites · PathMakers</p>
+        <p class="pj-txt">Production-ready responsive frontends built and handed off to live
+          clients during the PathMakers internship.</p>
+        <div class="pj-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>      </div>
+      <div class="pj-r pj-r-6">
+        <figure class="pj-shot">
+          <img src="assets/img/prosport.png" alt="ProSport — client website built during the PathMakers internship"
+               width="1893" height="866" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </article>
+
+    <article class="pj" data-c="open">
+      <div class="pj-l">
+        <span class="pj-no">07</span>
+        <h3 class="pj-title">Steganography</h3>
+        <p class="pj-kind">Pixel-level concealment · Python</p>
+        <p class="pj-txt">Hides and recovers messages inside images through pixel-level
+          manipulation, validated with functional testing across multiple image formats. Grew out
+          of the cyber security internship.</p>
+        <div class="pj-tags"><span>Python</span><span>Encryption</span><span>Testing</span></div>
+        <a class="pj-cta" href="https://github.com/Srharish-05/EdunetStego/" target="_blank" rel="noopener"><span>GitHub</span><i>↗</i></a>
+      </div>
+      <div class="pj-r pj-r-7">
+        <figure class="pj-shot">
+          <img src="assets/img/steganography.webp" alt="Steganography — a message hidden inside an image at the pixel level"
+               width="1920" height="1920" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ═══════════ 04 SKILLS ═══════════ -->
+<section class="sec" id="skills">
+  <div class="sheet-head">
+    <span class="sh-no">04</span>
+    <h2 class="sh-name">Skills</h2>
+    <span class="sh-rule"></span>
+    <span class="sh-meta">Sheet 04 / 05</span>
+  </div>
+
+  <div class="field" id="field">
+    <div class="field-row">
+      <span class="field-k"><i class="dot dot-1"></i>Programming &amp; Concepts</span>
+      <div class="field-items">
+        <span class="fi" data-c="view">Java (OOP),</span>
+        <span class="fi" data-c="view">Data Structures &amp; Algorithms,</span>
+        <span class="fi" data-c="view">Operating Systems</span>
+      </div>
+    </div>
+    <div class="field-row">
+      <span class="field-k"><i class="dot dot-2"></i>Databases</span>
+      <div class="field-items">
+        <span class="fi" data-c="view">SQL,</span>
+        <span class="fi" data-c="view">MongoDB,</span>
+        <span class="fi" data-c="view">Firebase Firestore</span>
+      </div>
+    </div>
+    <div class="field-row">
+      <span class="field-k"><i class="dot dot-3"></i>Web Development</span>
+      <div class="field-items">
+        <span class="fi" data-c="view">HTML,</span>
+        <span class="fi" data-c="view">CSS,</span>
+        <span class="fi" data-c="view">JavaScript,</span>
+        <span class="fi" data-c="view">Node.js,</span>
+        <span class="fi" data-c="view">Express,</span>
+        <span class="fi" data-c="view">REST APIs,</span>
+        <span class="fi" data-c="view">Razorpay</span>
+      </div>
+    </div>
+    <div class="field-row">
+      <span class="field-k"><i class="dot dot-4"></i>Tools</span>
+      <div class="field-items">
+        <span class="fi" data-c="view">Git,</span>
+        <span class="fi" data-c="view">GitHub,</span>
+        <span class="fi" data-c="view">Postman,</span>
+        <span class="fi" data-c="view">Render,</span>
+        <span class="fi" data-c="view">VS Code,</span>
+        <span class="fi" data-c="view">Claude,</span>
+        <span class="fi" data-c="view">Antigravity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 05 CONTACT ═══════════ -->
+<section class="sec sec-contact" id="contact">
+  <div class="sheet-head">
+    <span class="sh-no">05</span>
+    <h2 class="sh-name">Contact</h2>
+    <span class="sh-rule"></span>
+    <span class="sh-meta">Sheet 05 / 05</span>
+  </div>
+
+  <!-- LAYOUT: the headline runs the full width of the sheet, and
+       everything else sits BENEATH it rather than beside it. The
+       old arrangement squeezed the headline into 1.45fr next to a
+       plate, which fought the one element that should dominate.
+
+       The section still dimensions itself: every figure in the
+       dimension labels is measured from the live element by JS,
+       never authored — resize and they change, because they are
+       true. #ctMain wraps both halves so one .in drives them all. -->
+  <div class="ct-wrap" id="ctMain">
+
+    <div class="ct-top">
+      <!-- overall height, struck down the left of the headline -->
+      <span class="cdim cdim-v" aria-hidden="true">
+        <i class="cdim-rule"></i>
+        <b class="cdim-txt" id="cdimV">--</b>
+      </span>
+
+      <h2 class="ct-head">
+        <span class="ct-l"><span>LET'S</span></span>
+        <span class="ct-l ct-i"><span>BUILD</span></span>
+        <span class="ct-l"><span>SOMETHING</span></span>
+        <span class="ct-l"><span>REAL.</span></span>
+      </h2>
+
+      <!-- overall width, struck under it -->
+      <span class="cdim cdim-h" aria-hidden="true">
+        <i class="cdim-rule"></i>
+        <b class="cdim-txt" id="cdimH">--</b>
+      </span>
+    </div>
+
+    <div class="ct-body">
+      <div class="ct-call">
+        <p class="ct-copy">
+          Open to SDE, full-stack and frontend roles — and to anything interesting
+          before then. Email gets to me fastest.
+        </p>
+
+        <a class="ct-mail" href="mailto:srharish05@gmail.com?subject=Hello%20Harish" data-c="open">
+          <span class="ct-mail-t">srharish05@gmail.com</span>
+        </a>
+
+        <!-- the same device again, one scale down: the email is a
+             part on the drawing too, so it gets dimensioned like one -->
+        <span class="cdim cdim-m" aria-hidden="true">
+          <i class="cdim-rule"></i>
+          <b class="cdim-txt" id="cdimM">--</b>
+        </span>
+      </div>
+
+      <!-- Every drawing carries a schedule. The channels were a flat
+           list of rows; they are now a ruled one with a header and a
+           reference column, which is the drawing's own way of saying
+           "here is the parts list". Still anchors, not a <table> —
+           the content is five links, and a screen reader should hear
+           five links. -->
+      <div class="ct-sched">
+        <div class="cs-head" aria-hidden="true">
+          <span>Ref</span><span>Channel</span><span>Value</span><span></span>
+        </div>
+        <a class="cs-row" href="mailto:srharish05@gmail.com?subject=Hello%20Harish" data-c="open">
+          <span class="cs-ref">01</span><span class="cs-ch">Email</span>
+          <span class="cs-v">srharish05@gmail.com</span><span class="cs-a">↗</span>
+        </a>
+        <a class="cs-row" href="tel:+919790555548" data-c="open">
+          <span class="cs-ref">02</span><span class="cs-ch">Phone</span>
+          <span class="cs-v">+91 97905 55548</span><span class="cs-a">↗</span>
+        </a>
+        <a class="cs-row" href="https://github.com/srharish-05" target="_blank" rel="noopener" data-c="open">
+          <span class="cs-ref">03</span><span class="cs-ch">GitHub</span>
+          <span class="cs-v">srharish-05</span><span class="cs-a">↗</span>
+        </a>
+        <a class="cs-row" href="https://linkedin.com/in/harish-s05" target="_blank" rel="noopener" data-c="open">
+          <span class="cs-ref">04</span><span class="cs-ch">LinkedIn</span>
+          <span class="cs-v">harish-s05</span><span class="cs-a">↗</span>
+        </a>
+      </div>
+
+</section>
+
+</main>
+
+<!-- ───────────── TITLE BLOCK FOOTER ─────────────
+     LAYOUT: a real title block is asymmetric — one dominant
+     principal cell carrying the drawing's authorship, with
+     smaller metadata cells nested around it. The old footer was
+     an even auto-fit grid of equal cells, which is a toolbar
+     wearing a title block's labels. This one is placed with
+     explicit grid areas and spans, so the hierarchy is real.
+
+     The scrolling AVAILABLE FOR WORK marquee is gone: it stated
+     one fact and repeated it six times to fill space. The status
+     strip above states it once, with the two facts a reader
+     actually needs next to it. -->
+<footer class="foot">
+
+  <div class="foot-status">
+    <span class="fs-big">Available for work</span>
+    <span class="fs-cell"><span class="fs-k">From</span><span class="fs-v">2027</span></span>
+    <span class="fs-cell"><span class="fs-k">Based</span><span class="fs-v">Karur, Tamil Nadu</span></span>
+  </div>
+
+  <div class="title-block">
+    <div class="tbk tbk-name">
+      <span class="tbk-k">Drawn by</span>
+      <span class="tbk-name-v">Harish S</span>
+      <span class="tbk-name-s">B.E. ECE · M. Kumarasamy College of Engineering</span>
+    </div>
+    <div class="tbk tbk-sheet"><span class="tbk-k">Sheet</span><span class="tbk-v">05 of 05</span></div>
+    <div class="tbk tbk-rev"><span class="tbk-k">Revision</span><span class="tbk-v tbk-revv">A</span></div>
+    <div class="tbk tbk-date"><span class="tbk-k">Date</span><span class="tbk-v"><i id="year">2026</i></span></div>
+    <div class="tbk tbk-scale"><span class="tbk-k">Scale</span><span class="tbk-v">1 : 1</span></div>
+    <div class="tbk tbk-notes"><span class="tbk-k">Notes</span><span class="tbk-v">Hand-built · no frameworks · no templates</span></div>
+    <button class="tbk tbk-btn" id="toTop" data-c="link"><span class="tbk-k">Return</span><span class="tbk-v">Top ↑</span></button>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
 </body>
-
 </html>

@@ -1,0 +1,1557 @@
+/* ══════════════════════════════════════════════════════════
+   HARISH S — PORTFOLIO
+   Concept: aged drafting stock. Cream paper, a sand card
+   layer, khaki furniture and dark olive ink — the four
+   colours of the brief, used verbatim — with one brick
+   revision mark. Dimension lines, sheet numbers, a title
+   block. Light only.
+
+   PALETTE PROVENANCE
+   #F8F3D9 #EBE5C2 #B9B28A #504B38 are given and unchanged.
+   Everything else moves lightness/chroma inside their hue
+   family (H 44-51) so additions read as the same palette.
+   The one exception is the mark: all four given colours
+   share a single hue, so the revision mark had nowhere to
+   come from and is pushed to H 22. See --accent.
+
+   OVERLAP POLICY (rules this file obeys)
+   1. --hdr is the ONLY header-height number. Every sticky
+      offset and scroll-padding derives from it.
+   2. No position:absolute for layout. Only for marks inside
+      a box that has already reserved their space.
+   3. Grids hosting sticky children use align-items:start.
+   4. Masked characters carry padding + matching negative
+      margin so tight line-heights can't shave glyphs.
+   ══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── stock ── cream and sand are given, unchanged */
+  --sheet:    #F8F3D9;   /* given */
+  --sheet-2:  #EBE5C2;   /* given */
+  --sheet-3:  #DFD8B4;   /* derived: a step between sand and khaki */
+  /* khaki, given. STRUCTURAL ONLY — it carries no text at any
+     size: 1.9:1 on the cream, 1.7:1 on the sand, 2.1:1 with
+     white. It is the ghost sheet-number and the scrollbar. */
+  --sheet-4:  #B9B28A;   /* given */
+
+  /* ── ink ── olive is given and does the most work on the
+     page: all body text, every hairline, the plate ground and
+     the footer band. At 7.8:1 on the cream it leaves very
+     little room beneath it, so the three-step ramp is tight
+     by arithmetic, not by choice — ink-3 cannot go lighter
+     than L 0.133 without failing the mono labels on sand. */
+  --ink:      #504B38;   /* given */
+  --ink-2:    #5C5540;   /* derived */
+  --ink-3:    #635C46;   /* derived — binds against --sheet-2 */
+
+  /* construction-line ink, two weights. Much stronger than a
+     ruled grid would take: a tiled pattern repeats its ink
+     hundreds of times across the sheet and has to stay near
+     invisible per line, but there are only seven lines on
+     this whole page, so each one can actually be seen. */
+  --grid:     rgba(80,75,56,.17);
+  --grid-2:   rgba(80,75,56,.10);
+
+  /* radii of the single construction. Three concentric rings
+     form one drafting detail; two long sweeps run mostly off
+     the sheet. vmax-capped so the geometry scales with the
+     viewport instead of cropping on small screens. */
+  --dr1:      min(12vmax, 190px);
+  --dr2:      min(7.4vmax, 116px);
+  --dr3:      min(2.4vmax, 36px);
+  --ar1:      min(62vmax, 920px);
+  --ar2:      min(44vmax, 650px);
+
+  /* the one dial for paper tooth: .03 is barely there,
+     .08 is openly textured, past .12 it reads as dirt. */
+  --tooth:    .06;
+
+  --rule:     rgba(80,75,56,.26);
+  --rule-2:   rgba(80,75,56,.13);
+  /* On pale stock there is no glare problem, so hairlines go
+     back to near-full ink — where the drafting sheet wants
+     them. (On the dark build this had to drop to .44.) */
+  --edge:     rgba(80,75,56,.82);
+
+  /* ── marks ── the four given colours share one hue, so the
+     revision mark the layout is built around had nothing to be
+     made of. --accent is the one deliberate departure: same
+     warm earth, chroma up and hue pushed to brick, which is
+     the minimum needed for a mark to function as a mark.
+       --accent  carries text  (6.7:1 on cream, 5.9:1 on sand)
+       --hot     fills and rules only, never small text
+       --glow    the khaki counter-tone the shade pools use */
+  --accent:   #8A3F14;
+  --hot:      #C2651F;
+  --glow:     #9C9468;
+
+  /* deep fills — these carry #fff art and the selection
+     highlight, so they stay dark regardless of --hot */
+  --fill-hot: #7C3710;
+  --fill-dk:  #3B3828;
+
+  /* the project panels, desaturated and warmed so they read as
+     a family of shadows under this stock rather than as bright
+     chips fighting it. All clear #fff at 8:1 or better. */
+  --cyan:     #3A4F57;
+  --teal:     #3D5346;
+  --steel:    #514A3A;
+  --violet:   #4A3F52;
+
+  /* A plate ground takes a PAIR: muted label + display mark.
+     One pair cannot serve two grounds, so .ct-plate overrides
+     both further down. */
+  --plate-bg:   #504B38;   /* given */
+  --plate-mu:   #C9C1A0;
+  --plate-mark: #D98843;
+  --plate-ln:   rgba(248,243,217,.22);
+
+  --f-disp: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --f-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* the one number every fixed/sticky layer measures from */
+  --hdr:   4.5rem;
+  --stick: calc(var(--hdr) + 1.25rem);
+
+  --pad: clamp(1.1rem, 4.5vw, 4rem);
+  --max: 1500px;
+
+  --e:    cubic-bezier(.19,1,.22,1);
+  --e-io: cubic-bezier(.76,0,.24,1);
+}
+
+/* ───────── RESET ───────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--stick);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--sheet);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: clamp(.97rem, 1.02vw, 1.06rem);
+  font-weight: 350;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body.lock { overflow: hidden; }
+
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+svg { display: block; }
+b, strong { font-weight: 600; }
+
+/* selection is real text, so it takes the deep fill, not --hot
+   (#fff on --hot is only 3.2:1; on --fill-hot it is 8.7:1) */
+::selection { background: var(--fill-hot); color: #fff; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: var(--sheet-2); }
+::-webkit-scrollbar-thumb { background: var(--sheet-4); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ═══════════ BACKGROUND: A SHEET WITH ONE DRAWING ON IT ═══
+   Four fixed layers, each doing one job and nothing else.
+   Bottom to top: foxing, construction, tooth, corner marks.
+
+   NO PATTERN. Nothing with a motif tiles, and no gradient
+   here is of the repeating variety — grep the file for that
+   prefix and the only hits are in this sentence. A ruled
+   background says "graph paper"; a drawn one says "a
+   drawing", which is what this page is pretending to be.
+
+   .topo   FOXING. The only layer that moves, and it moves by
+           background-position, never by repaint. Stains are
+           edge-weighted rather than centred, because paper
+           ages from the margins in.
+   .regs   THE CONSTRUCTION. One drafting detail — three
+           concentric rings with centre lines struck through
+           them — plus two long arcs sweeping mostly off the
+           sheet. Seven lines total, each drawn exactly once
+           at a deliberate position and size. Because there
+           are seven lines rather than hundreds, each can
+           carry real ink instead of hiding near invisible.
+   .grain  PAPER TOOTH. Procedural fractal noise from one
+           inline feTurbulence. The only part of this that is
+           technically tiled, and the only part that has to
+           be: it is noise, so there is no motif to notice.
+           Static — a jittering grain is film, this is paper.
+   .ticks  The corner registration marks.
+
+   Everything is CSS gradients plus one ~300-byte data URI.
+   No images, no canvas, no repaint cost.                 */
+
+.topo {
+  position: fixed; inset: -20%; z-index: 0; pointer-events: none;
+  background-repeat: no-repeat;
+  /* colour-mixed off the tokens, so --glow / --accent retune
+     the whole stain field from one place */
+  background-image:
+    radial-gradient(38% 30% at  4% 10%, color-mix(in srgb, var(--glow)    26%, transparent), transparent 70%),
+    radial-gradient(34% 26% at 97% 22%, color-mix(in srgb, var(--accent)   8%, transparent), transparent 68%),
+    radial-gradient(46% 24% at 50%102%, color-mix(in srgb, var(--ink)     10%, transparent), transparent 72%),
+    radial-gradient(26% 46% at 99% 78%, color-mix(in srgb, var(--sheet-4) 30%, transparent), transparent 74%);
+  animation: topoDrift 42s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes topoDrift {
+  to { background-position: 70px -40px, -65px 50px, 35px 60px, -45px -25px; }
+}
+
+/* The rings are feathered across ~1.2px rather than cut on a
+   hard stop. A hard 1px stop on a 900px-radius circle aliases
+   into a visibly stepped curve; the feather costs nothing and
+   reads as a drawn line instead of a jagged one. */
+.regs {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    /* the detail: three concentric rings about one centre */
+    radial-gradient(circle at 19% 25%,
+      transparent calc(var(--dr3) - 1.2px), var(--grid)   calc(var(--dr3) - .6px) calc(var(--dr3) + .6px), transparent calc(var(--dr3) + 1.2px)),
+    radial-gradient(circle at 19% 25%,
+      transparent calc(var(--dr2) - 1.2px), var(--grid)   calc(var(--dr2) - .6px) calc(var(--dr2) + .6px), transparent calc(var(--dr2) + 1.2px)),
+    radial-gradient(circle at 19% 25%,
+      transparent calc(var(--dr1) - 1.2px), var(--grid-2) calc(var(--dr1) - .6px) calc(var(--dr1) + .6px), transparent calc(var(--dr1) + 1.2px)),
+    /* two long sweeps, struck from centres off the sheet */
+    radial-gradient(circle at 104% 118%,
+      transparent calc(var(--ar1) - 1.2px), var(--grid-2) calc(var(--ar1) - .6px) calc(var(--ar1) + .6px), transparent calc(var(--ar1) + 1.2px)),
+    radial-gradient(circle at -8% 97%,
+      transparent calc(var(--ar2) - 1.2px), var(--grid-2) calc(var(--ar2) - .6px) calc(var(--ar2) + .6px), transparent calc(var(--ar2) + 1.2px)),
+    /* centre lines struck through the detail */
+    linear-gradient(var(--grid-2), var(--grid-2)),
+    linear-gradient(var(--grid-2), var(--grid-2));
+  /* the five rings fill the layer; the two centre lines are
+     sized to hairlines and placed on the detail's centre */
+  background-size:
+    auto, auto, auto, auto, auto,
+    47% 1px,
+    1px 55%;
+  background-position:
+    0 0, 0 0, 0 0, 0 0, 0 0,
+    0 25%,
+    19% 0;
+}
+/* edge burn — the faintest darkening, as on a sheet that has
+   sat in a folder. Lives on .regs because .regs is a fixed
+   layer JS never writes a transform to, so it stays put. */
+.regs::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(130% 100% at 50% 34%, transparent 46%, rgba(80,75,56,.13) 100%);
+}
+
+/* ── paper tooth ──
+   One feTurbulence. The feColorMatrix throws away RGB and
+   drives alpha from the noise instead, so the result is
+   black at varying opacity rather than coloured speckle —
+   which is what stops it reading as television static.
+   stitchTiles makes the 180px tile seamless.
+
+   Deliberately NOT mix-blend-mode: multiply. For a pure
+   black source, multiply and normal alpha compositing are
+   mathematically identical, and multiply would force the
+   compositor to re-blend this whole fixed layer every frame
+   that .topo's scroll transform changes beneath it. Same
+   pixels, none of the cost.
+
+   Sits below main (z-index 2), so it textures the sheet
+   without ever touching the text sitting on it. */
+.grain {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  opacity: var(--tooth);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .34 .34 .34 0 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23t)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* sheet corner ticks */
+.ticks { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.ticks i { position: absolute; width: 16px; height: 16px; border: 0 solid var(--ink-3); opacity: .7; }
+.ticks i:nth-child(1) { top: 10px;    left: 10px;    border-top-width: 1px; border-left-width: 1px; }
+.ticks i:nth-child(2) { top: 10px;    right: 10px;   border-top-width: 1px; border-right-width: 1px; }
+.ticks i:nth-child(3) { bottom: 10px; left: 10px;    border-bottom-width: 1px; border-left-width: 1px; }
+.ticks i:nth-child(4) { bottom: 10px; right: 10px;   border-bottom-width: 1px; border-right-width: 1px; }
+
+main, .topbar, .foot { position: relative; z-index: 2; }
+
+/* shared mono micro-label */
+.spec-k, .sh-no, .sh-meta, .tb-clock, .fact-k, .field-k, .pj-kind,
+.tl-date, .plate-k, .cs-ref, .cs-ch, .tbk-k, .dim-label, .fs-k {
+  font-family: var(--f-mono);
+  font-size: .66rem;
+  font-weight: 400;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LOADER — plotting the sheet
+   ══════════════════════════════════════════════════════════ */
+.loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--sheet);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: clamp(1.2rem,4vw,2.6rem) var(--pad);
+  transition: transform 1s var(--e-io), visibility 1s;
+}
+.loader.done { transform: translateY(-101%); visibility: hidden; }
+.ld-head, .ld-foot {
+  display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  font-family: var(--f-mono); font-size: .64rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.ld-foot { border-top: 1px solid var(--rule-2); padding-top: .9rem; }
+.ld-head { border-bottom: 1px solid var(--rule-2); padding-bottom: .9rem; }
+.ld-mid { display: flex; align-items: flex-end; gap: clamp(1rem,4vw,3rem); flex-wrap: wrap; }
+.ld-num {
+  font-family: var(--f-disp); font-weight: 500;
+  font-size: clamp(5rem, 24vw, 19rem); line-height: .76;
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.ld-bars { flex: 1; min-width: 160px; display: flex; flex-direction: column; gap: .5rem; padding-bottom: 1.2rem; }
+.ld-bar { height: 2px; background: var(--rule-2); overflow: hidden; }
+.ld-bar i { display: block; height: 100%; width: 0%; background: var(--hot); }
+.ld-cap { font-family: var(--f-mono); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+
+/* ══════════════════════════════════════════════════════════
+   CURSOR — a labelled disc, and ONLY over a link
+   ══════════════════════════════════════════════════════════
+   It used to be a crosshair that rode the pointer across the
+   whole sheet and swelled into a disc on anything tagged.
+   Two problems with that: it was present whether or not it
+   had anything to say, and it never replaced the native
+   arrow — so every pointer had a crosshair bolted to it. The
+   decoration was constant and the information occasional,
+   which is backwards.
+
+   Now there is one state. Over a link: the disc, reading OPEN
+   or VIEW. Anywhere else: nothing, and the operating system's
+   own cursor, untouched. The native arrow is suppressed only
+   while the disc is up (`body.cur-link`), so the two are
+   never on screen together and the page never takes the
+   pointer away without putting something in its place. */
+/* ── the pointer is a pencil ───────────────────────────────
+   The sheet is a drawing, so the instrument on it is the one
+   that made it. Both states are 32×32 SVG data-URIs handed to
+   the native `cursor` property rather than a JS-positioned
+   element: the OS compositor draws them, so the tip never lags
+   the hand — which a spring-followed div always does, and
+   which matters for a thing you point with.
+
+   The pencil is built once in a local frame with its tip at
+   the origin and its body running up the -Y axis, then rotated
+   into place about that tip. Only the angle changes between
+   the two states, so the barrel can never drift off the point.
+     --cur-draw  at rest, 45°
+     --cur-mark  over a link: leans in to 38° and has just laid
+                 down a stroke
+   Hotspot `3 29` is the graphite tip, not the image corner. */
+:root {
+  --cur-draw: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(3.4 28.6) rotate(45)' stroke='%233B3828' stroke-width='.85' stroke-linejoin='round'%3E%3Crect x='-3' y='-28.6' width='6' height='4' rx='1.4' fill='%23C98E7A'/%3E%3Crect x='-3' y='-24.8' width='6' height='2.6' fill='%239C9468'/%3E%3Crect x='-3' y='-22.4' width='6' height='14' fill='%23C2651F'/%3E%3Cpath d='M-3,-8.4 L-1.4,-3.2 L1.4,-3.2 L3,-8.4 Z' fill='%23F2E8C9'/%3E%3Cpath d='M-1.4,-3.2 L0,0 L1.4,-3.2 Z' fill='%233B3828'/%3E%3C/g%3E%3C/svg%3E") 3 29, auto;
+  --cur-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M0.9,30.5 C 4.2,29.1 7.8,30.7 11.4,29.2' fill='none' stroke='%238A3F14' stroke-width='1.2' stroke-linecap='round'/%3E%3Cg transform='translate(3.4 28.6) rotate(38)' stroke='%233B3828' stroke-width='.85' stroke-linejoin='round'%3E%3Crect x='-3' y='-28.6' width='6' height='4' rx='1.4' fill='%23C98E7A'/%3E%3Crect x='-3' y='-24.8' width='6' height='2.6' fill='%239C9468'/%3E%3Crect x='-3' y='-22.4' width='6' height='14' fill='%23C2651F'/%3E%3Cpath d='M-3,-8.4 L-1.4,-3.2 L1.4,-3.2 L3,-8.4 Z' fill='%23F2E8C9'/%3E%3Cpath d='M-1.4,-3.2 L0,0 L1.4,-3.2 Z' fill='%233B3828'/%3E%3C/g%3E%3C/svg%3E") 3 29, pointer;
+}
+
+.cursor {
+  position: fixed; top: 0; left: 0; z-index: 9500;
+  width: 60px; height: 60px; border-radius: 50%;
+  /* the deep fill: this disc carries the label at .55rem, and
+     #fff on --hot is only 3.2:1 */
+  background: var(--fill-hot);
+  pointer-events: none;
+  display: grid; place-items: center;
+  opacity: 0; scale: .55;
+  transition: opacity .22s var(--e), scale .3s var(--e);
+  will-change: transform;
+  /* The pencil now stays on screen, and it occupies the space
+     up and to the RIGHT of the tip. The tag is pushed down-left
+     so the two never sit on top of each other — it reads as the
+     note the pencil just wrote rather than a disc with a pencil
+     lying across it. */
+  margin: 30px 0 0 -30px;
+}
+.cursor.on { opacity: 1; scale: 1; }
+.cursor span {
+  font-family: var(--f-mono); font-size: .55rem; font-weight: 500;
+  letter-spacing: .14em; color: #fff; white-space: nowrap;
+}
+
+/* The pencil replaces the arrow everywhere, so it is set on
+   <html> and inherited. `a` and `button` carry cursor:pointer
+   from the UA sheet, which inheritance alone would never
+   outrank — hence the explicit rule for them.
+
+   `body.cur-link *` is the JS-driven state: the descendant
+   selector catches the case where the pointer is over a span
+   INSIDE a link, which :hover on the anchor would resolve the
+   same way but which the label logic already computes. */
+html { cursor: var(--cur-draw); }
+a, button { cursor: var(--cur-draw); }
+body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
+
+/* No hover, no pointer: no disc, and the pencil would only be
+   a picture of a cursor on a device that has none. */
+@media (hover: none), (pointer: coarse) {
+  .cursor { display: none; }
+  /* resetting the two tokens retires the pencil everywhere it
+     is used at once — no selector here needs to know who the
+     consumers are */
+  :root { --cur-draw: auto; --cur-mark: pointer; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOP BAR
+   ══════════════════════════════════════════════════════════ */
+/* ── MORPHING BAR ──
+   At rest it is flush with the sheet: full width, no box,
+   no blur — part of the page. The moment you scroll it
+   detaches into a floating callout: narrower, inset from
+   the top, ruled border and an offset drop shadow.
+   Only max-width / height / padding / colour animate, so
+   it never reflows the page it sits over. */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 600;
+  padding: 0 var(--pad);
+  transition: top .55s var(--e), padding .55s var(--e);
+}
+.tb-inner {
+  height: var(--hdr);
+  max-width: var(--max); margin: 0 auto;
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: center; gap: 1rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--ink) 0%, transparent);
+  transition: height .55s var(--e), max-width .55s var(--e),
+              padding .55s var(--e), background .45s var(--e),
+              border-color .45s var(--e), box-shadow .55s var(--e);
+}
+.topbar.float { top: .7rem; }
+.topbar.float .tb-inner {
+  height: 3.3rem;
+  max-width: min(1080px, 100%);
+  padding: 0 1.2rem;
+  background: color-mix(in srgb, var(--sheet) 92%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-color: var(--edge);
+  /* back to a dark offset shadow now the stock is pale — the
+     dark build needed a light one because a dark hard shadow
+     on near-black is invisible */
+  box-shadow: 5px 5px 0 0 color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+.tb-id { display: flex; align-items: center; gap: .55rem; }
+.tb-mark {
+  font-family: var(--f-mono); font-weight: 600; font-size: .74rem;
+  letter-spacing: .06em; border: 1px solid var(--edge); padding: .22rem .38rem;
+}
+.tb-name { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; }
+
+.tb-nav { display: flex; justify-content: center; gap: 1.3rem; }
+.tb-nav a {
+  position: relative;
+  font-family: var(--f-mono); font-size: .63rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  display: inline-flex; gap: .4rem; align-items: baseline;
+  color: var(--ink-2); transition: color .3s;
+}
+.tb-nav a em { font-style: normal; font-size: .52rem; color: var(--ink-3); }
+
+/* ── the marked section ────────────────────────────────────
+   Was a 1px rule scaling in from the right — correct, and
+   belonging to no particular sheet. Now it is the mark a
+   pencil leaves: two passes that overshoot and wobble, drawn
+   on rather than slid in.
+
+   Mechanism: pathLength="1" on both paths renormalises each
+   one to a length of 1 regardless of its real geometry, so a
+   dash of 1 is exactly the whole stroke and an offset of 1
+   hides it. Animating the offset to 0 walks the dash gap off
+   the end — the line appears from its start to its finish.
+   One rule covers every link because nothing here depends on
+   the word's width.
+
+   preserveAspectRatio="none" stretches the box to the word.
+   That scales X only — the strokes are near-horizontal, so
+   their weight is set by the Y scale, which is identical on
+   every link. No vector-effect needed, and avoiding it keeps
+   the dash maths in plain user units where pathLength works
+   reliably across browsers. */
+.nav-ul {
+  position: absolute; left: -5%; bottom: -9px;
+  width: 110%; height: 9px; overflow: visible;
+  pointer-events: none;
+}
+.nav-ul path {
+  fill: none; stroke: var(--hot); stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  transition: stroke-dashoffset .5s var(--e);
+}
+.nul-a { stroke-width: 1.7; }
+/* the second pass is lighter and shorter, the way the one you
+   don't lift the hand for always is */
+.nul-b { stroke-width: 1.15; opacity: .5; }
+
+.tb-nav a:hover, .tb-nav a.on { color: var(--ink); }
+.tb-nav a:hover .nav-ul path,
+.tb-nav a.on   .nav-ul path { stroke-dashoffset: 0; }
+/* the passes are sequential going on — the second can't be
+   laid over the first before the first exists — and both
+   simply lift together coming off */
+.tb-nav a:hover .nul-b,
+.tb-nav a.on   .nul-b { transition-delay: .16s; }
+
+.tb-right { display: flex; align-items: center; gap: .9rem; justify-self: end; }
+.tb-clock { font-size: .61rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.tb-clock i { font-style: normal; }
+.tb-cta {
+  font-family: var(--f-mono); font-size: .61rem; font-weight: 500;
+  letter-spacing: .14em; text-transform: uppercase;
+  padding: .45rem .85rem; background: var(--ink); color: var(--sheet);
+  transition: background .3s;
+}
+.tb-cta:hover { background: var(--accent); }
+
+.tb-burger { display: none; width: 26px; height: 17px; position: relative; }
+.tb-burger i { position: absolute; left: 0; width: 100%; height: 1.5px; background: var(--ink); transition: transform .45s var(--e), opacity .3s; }
+.tb-burger i:nth-child(1){top:0} .tb-burger i:nth-child(2){top:8px} .tb-burger i:nth-child(3){top:16px}
+.tb-burger.on i:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.tb-burger.on i:nth-child(2){opacity:0}
+.tb-burger.on i:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+
+/* ══════════════════════════════════════════════════════════
+   SPLIT TEXT
+   ══════════════════════════════════════════════════════════ */
+/* ── EXPOSURE — used by the hero name ──
+   A pass of the plotter crosses the name once; each glyph
+   develops as it is reached — out of focus and underweight,
+   then resolving to full weight as the ink takes.
+
+   Big Shoulders Display is a variable face (400..800), so
+   the weight is a real axis animation, not a swap between
+   two static cuts: the letters *thicken* as they land.
+   One layer per glyph instead of the two the old outline-
+   plus-flood device needed.
+
+   On cream the pass itself had to be rebuilt: a glowing beam
+   is invisible on pale stock, so it is now a wedge of SHADE
+   with a hard ink leading edge. See .plot-head.         */
+.ch-c {
+  display: inline-block; vertical-align: top;
+  /* tight display line-heights would shave the blurred
+     ascenders, so each glyph carries its own slack */
+  padding: .12em .04em .18em; margin: -.12em -.04em -.18em;
+}
+.ch-c > i {
+  display: block; font-style: normal;
+  opacity: 0;
+  transform: translate3d(0, .42em, 0) scaleY(1.18);
+  filter: blur(16px);
+  font-variation-settings: 'wght' 400;
+  will-change: transform, filter, opacity;
+}
+.split-go .ch-c > i { animation: expose 1.15s var(--e) forwards; }
+@keyframes expose {
+  0%   { opacity: 0; transform: translate3d(0,.42em,0) scaleY(1.18);
+         filter: blur(16px); font-variation-settings: 'wght' 400; }
+  38%  { opacity: 1; filter: blur(5px); }
+  100% { opacity: 1; transform: none;
+         filter: blur(0); font-variation-settings: 'wght' 700; }
+}
+
+/* the plotter pass — a soft wedge of SHADE with one hard ink
+   leading edge, crossing the name a beat ahead of the glyphs
+   so it reads as the thing causing them. Inverted from the
+   dark build, where this was a wedge of light; a glow on
+   cream stock is simply not visible.                      */
+.plot-head {
+  position: absolute; top: -4%; bottom: 30%; left: 0;
+  width: clamp(90px, 14vw, 210px);
+  margin-left: calc(clamp(90px, 14vw, 210px) * -1);
+  opacity: 0; pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--glow)   10%, transparent) 45%,
+    color-mix(in srgb, var(--ink)    12%, transparent) 86%,
+    color-mix(in srgb, var(--accent) 22%, transparent) 99%);
+  border-right: 1px solid var(--accent);
+  box-shadow: 2px 0 22px color-mix(in srgb, var(--ink) 16%, transparent);
+}
+.go .plot-head { animation: beamSweep 1.9s var(--e-io) .1s forwards; }
+@keyframes beamSweep {
+  0%   { left: 0;    opacity: 0 }
+  7%   { opacity: 1 }
+  86%  { opacity: 1 }
+  100% { left: 100%; opacity: 0 }
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO — three grid rows. Nothing absolute.
+   ══════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100svh;
+  padding: calc(var(--hdr) + 1.6rem) var(--pad) clamp(1.4rem,3.5vw,2.4rem);
+  display: grid; grid-template-rows: auto 1fr auto;
+  gap: clamp(1.5rem,4vw,2.8rem);
+  max-width: var(--max); margin: 0 auto;
+  border-bottom: 1px solid var(--rule);
+}
+
+.spec {
+  display: flex; flex-wrap: wrap; align-items: flex-start;
+  gap: clamp(1.2rem,4vw,3.5rem);
+  padding-bottom: 1.1rem; border-bottom: 1px solid var(--rule-2);
+}
+.spec-col { display: flex; flex-direction: column; gap: .15rem; }
+.spec-k { color: var(--ink-3); }
+.spec-v { font-size: .94rem; }
+.spec-live { display: inline-flex; align-items: center; gap: .45rem; color: var(--accent); font-weight: 500; }
+.blip { width: 7px; height: 7px; background: var(--hot); animation: blip 1.6s steps(1) infinite; }
+@keyframes blip { 50% { opacity: .2 } }
+
+.seal {
+  margin-left: auto;
+  width: clamp(74px, 7.5vw, 100px); aspect-ratio: 1;
+  display: grid; place-items: center; position: relative; opacity: 0;
+}
+.go .seal { animation: fadeUp .9s var(--e) 1.8s forwards; }
+.seal-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 20s linear infinite; }
+.seal-ring text { font-family: var(--f-mono); font-size: 14px; letter-spacing: .18em; fill: var(--ink-3); }
+.seal:hover .seal-ring { animation-duration: 5s; }
+@keyframes spin { to { transform: rotate(360deg) } }
+.seal-arrow { font-size: 1rem; color: var(--accent); animation: bob 2.2s var(--e-io) infinite; }
+@keyframes bob { 50% { transform: translateY(6px) } }
+
+/* the type, dimensioned */
+.hero-type-wrap { position: relative; align-self: end; display: flex; flex-direction: column; gap: .9rem; }
+/* the stain the name is sitting in — fades up behind the
+   glyphs once the pass has gone by, so the reveal has
+   somewhere to land instead of ending on flat cream.
+   Subtractive here, where the dark build was additive. */
+.hero-type-wrap::before {
+  content: ""; position: absolute; z-index: -1;
+  inset: -18% -12% 4% -12%;
+  background: radial-gradient(58% 72% at 38% 46%, color-mix(in srgb, var(--glow)   20%, transparent), transparent 72%),
+              radial-gradient(44% 58% at 76% 62%, color-mix(in srgb, var(--accent)  7%, transparent), transparent 70%);
+  opacity: 0; pointer-events: none;
+}
+.go .hero-type-wrap::before { animation: fadeUp 1.6s var(--e) 1.15s forwards; }
+
+.hero-type {
+  font-family: var(--f-disp); font-weight: 700;
+  font-size: clamp(4.5rem, 23vw, 20rem);
+  line-height: .8; letter-spacing: -.005em; text-transform: uppercase;
+  color: var(--ink);
+}
+.ht-line { display: block; will-change: transform; }
+.ht-line-b { display: flex; align-items: flex-end; gap: clamp(.9rem,3vw,2.4rem); flex-wrap: wrap; }
+/* the revision mark lands on the surname. On the dark build
+   this glyph emitted light; ink on paper does the opposite,
+   so the glow becomes the faintest bleed into the stock. */
+.w-alt {
+  color: var(--accent);
+  text-shadow: 0 .012em .06em color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.ht-sub {
+  display: flex; flex-direction: column; flex: 0 1 auto;
+  font-family: var(--f-mono); font-size: clamp(.58rem,.78vw,.7rem);
+  letter-spacing: .12em; text-transform: uppercase;
+  line-height: 1.75; color: var(--ink-2); margin-bottom: .9em;
+}
+.ht-sub em { font-style: normal; opacity: 0; transform: translateY(12px); }
+.go .ht-sub em { animation: fadeUp .8s var(--e) forwards; }
+.go .ht-sub em:nth-child(1){animation-delay:1.35s}
+.go .ht-sub em:nth-child(2){animation-delay:1.45s}
+@keyframes fadeUp { to { opacity: 1; transform: none } }
+
+/* dimension line — a drafting measure under the name.
+   Draws out from the centre once the name has developed. */
+.dim { display: flex; align-items: center; gap: .7rem; opacity: 0; }
+.go .dim { animation: fadeUp .9s var(--e) 1.6s forwards; }
+@keyframes ruleOut { to { transform: none } }
+.dim-cap { width: 1px; height: 11px; background: var(--ink-3); flex: 0 0 auto; }
+.dim-line {
+  flex: 1; height: 1px; background: var(--ink-3); opacity: .55;
+  transform: scaleX(0);
+}
+/* the two rules grow outward from the label between them.
+   Index, not :nth-of-type(n of .dim-line) — Safari only
+   picked that selector up in 17.                         */
+.dim > :nth-child(2) { transform-origin: right center; }
+.dim > :nth-child(4) { transform-origin: left center; }
+.go .dim-line { animation: ruleOut 1s var(--e) 1.65s forwards; }
+.dim-label { color: var(--ink-3); white-space: nowrap; }
+
+/* foot */
+.hero-foot {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,.8fr);
+  gap: clamp(1.4rem,4vw,4rem); align-items: end;
+  padding-top: 1.2rem; border-top: 1px solid var(--rule);
+}
+.hero-bio {
+  max-width: 54ch; font-size: clamp(.98rem,1.25vw,1.2rem);
+  line-height: 1.62; color: var(--ink-2);
+  opacity: 0; transform: translateY(18px);
+}
+.go .hero-bio { animation: fadeUp 1s var(--e) 1.55s forwards; }
+.hero-bio a { color: var(--ink); border-bottom: 1px solid var(--hot); transition: background .3s, color .3s; }
+/* the deep fill, not --hot: this hover puts white on the
+   swatch and --hot only clears 3.2:1 with white */
+.hero-bio a:hover { background: var(--fill-hot); color: #fff; }
+
+.hero-links { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule); opacity: 0; }
+.go .hero-links { animation: fadeUp 1s var(--e) 1.7s forwards; }
+.hl {
+  position: relative; overflow: hidden;
+  display: flex; justify-content: space-between; align-items: center; gap: .6rem;
+  padding: .7rem 1rem .7rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--f-mono); font-size: .63rem;
+  letter-spacing: .11em; text-transform: uppercase;
+}
+.hl:nth-child(even) { border-left: 1px solid var(--rule); }
+.hl span, .hl i { position: relative; z-index: 2; font-style: normal; transition: color .35s, transform .45s var(--e); }
+.hl::before { content: ""; position: absolute; inset: 0; background: var(--ink); transform: translateY(101%); transition: transform .45s var(--e); }
+.hl:hover::before { transform: none; }
+.hl:hover span, .hl:hover i { color: var(--sheet); }
+.hl:hover i { transform: translate(3px,-3px); }
+
+/* ══════════════════════════════════════════════════════════
+   TICKER
+   ══════════════════════════════════════════════════════════ */
+.ticker {
+  overflow: hidden; padding: .7rem 0;
+  background: var(--sheet-2);
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.ticker-track { display: flex; align-items: center; gap: 1.6rem; width: max-content; will-change: transform; }
+.ticker-track span {
+  font-family: var(--f-disp); font-weight: 500;
+  font-size: clamp(1.5rem,4.2vw,3.2rem);
+  letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; color: var(--ink);
+}
+.ticker-track b { color: var(--hot); font-size: 1rem; font-weight: 400; }
+
+/* ══════════════════════════════════════════════════════════
+   SHEET HEAD — a title strip, not a sticky rail.
+   Removes an entire class of sticky-vs-sticky collision.
+   ══════════════════════════════════════════════════════════ */
+.sec {
+  max-width: var(--max); margin: 0 auto;
+  padding: clamp(3.5rem,9vw,7rem) var(--pad);
+  border-bottom: 1px solid var(--rule);
+}
+.sheet-head {
+  display: flex; align-items: baseline; gap: clamp(.7rem,2vw,1.4rem);
+  padding-bottom: .9rem; margin-bottom: clamp(2rem,5vw,3.5rem);
+  border-bottom: 1px solid var(--edge);
+}
+.sh-no { color: var(--accent); font-weight: 500; }
+.sh-name {
+  font-family: var(--f-disp); font-weight: 600;
+  font-size: clamp(1.7rem,4.5vw,3rem);
+  letter-spacing: .005em; text-transform: uppercase; line-height: 1;
+}
+.sh-rule { flex: 1; height: 1px; background: var(--rule); align-self: center; }
+.sh-meta { color: var(--ink-3); white-space: nowrap; }
+
+/* ══════════════════════════════════════════════════════════
+   01 ABOUT
+   ══════════════════════════════════════════════════════════ */
+.ab-pair {
+  display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,.6fr);
+  gap: clamp(1.2rem,3vw,2.6rem); align-items: stretch;
+  margin-bottom: clamp(2.5rem,6vw,4rem);
+}
+/* Ragged right, and no hyphenation — a word that doesn't fit
+   moves to the next line whole. No measure cap: the paragraph
+   runs the full width of its grid column, so the size is what
+   sets the line length and no dead band is left on the right. */
+.readalong {
+  font-size: clamp(1.05rem,1.75vw,1.6rem);
+  line-height: 1.55; letter-spacing: -.006em; font-weight: 300; max-width: none;
+  text-align: left; hyphens: none; -webkit-hyphens: none;
+}
+/* unlit words stay readable, so the paragraph still works
+   if the scroll handler never runs */
+.readalong .wd { color: var(--ink-3); transition: color .25s linear; }
+.readalong .wd.lit { color: var(--ink); }
+
+/* The plate is a dark panel on pale stock — the olive given
+   in the brief, carrying cream text. It keeps its own ground
+   and muted-label tokens so .ct-plate can repaint itself
+   teal without any label colour going unreadable. */
+.plate {
+  background: var(--plate-bg); color: var(--sheet);
+  display: grid; grid-template-columns: auto minmax(0,1fr);
+  grid-template-rows: minmax(0,1fr) auto;
+  gap: 1rem clamp(.9rem,2vw,1.4rem);
+  padding: clamp(1.1rem,2.2vw,1.6rem);
+  min-height: 250px;
+}
+.plate-spine {
+  grid-row: 1 / -1; writing-mode: vertical-rl; transform: rotate(180deg);
+  font-family: var(--f-mono); font-size: .6rem; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--plate-mu); align-self: stretch;
+}
+.plate-body { display: flex; flex-direction: column; gap: .3rem; align-self: start; }
+.plate-mark {
+  font-family: var(--f-disp); font-weight: 700;
+  font-size: clamp(3rem,7vw,5rem); line-height: .82;
+  margin-bottom: .6rem; color: var(--plate-mark);
+}
+.plate-k { color: var(--plate-mu); line-height: 1.7; }
+
+/* ── THE PORTRAIT ──
+   One state, always. The photograph is shown as it is — no
+   tint, no hover reveal, no transition. A portrait that
+   changes under the pointer asks to be played with; this one
+   is just the identity on the plate, so it holds still.
+
+   width/height are on the <img> so the plate reserves the box
+   before the file lands — the image is the one thing on this
+   page that can arrive late and shove layout around. */
+.pid { margin-bottom: .8rem; }
+.pid-frame {
+  position: relative;
+  border: 1px solid var(--plate-ln);
+  line-height: 0;
+}
+.pid-img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  /* face sits high in the frame, so bias the crop upward */
+  object-position: 50% 18%;
+}
+
+/* the old plate-mark, kept as a corner stamp over the print */
+.pid-stamp {
+  position: absolute; right: .4rem; bottom: .4rem;
+  font-family: var(--f-disp); font-weight: 700;
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem); line-height: 1;
+  color: var(--plate-mark);
+  text-shadow: 0 1px 3px rgba(0,0,0,.45);
+}
+/* registration ticks on the print's corners */
+.pid-tick {
+  position: absolute; width: 9px; height: 9px;
+  border: 0 solid var(--plate-mu); opacity: .8;
+}
+.pid-tick:nth-of-type(1) { top: 4px;    left: 4px;  border-top-width: 1px; border-left-width: 1px; }
+.pid-tick:nth-of-type(2) { top: 4px;    right: 4px; border-top-width: 1px; border-right-width: 1px; }
+.pid-tick:nth-of-type(3) { bottom: 4px; left: 4px;  border-bottom-width: 1px; border-left-width: 1px; }
+.pid-tick:nth-of-type(4) { bottom: 4px; right: 4px; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* Stays visible. It is a figure caption, not a reveal. */
+.pid-cap {
+  display: block; padding-top: .4rem;
+  font-family: var(--f-mono); font-size: .54rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--plate-mu); line-height: 1.4;
+}
+.plate-foot {
+  grid-column: 2; display: flex; justify-content: space-between; gap: 1rem;
+  padding-top: .8rem; border-top: 1px solid var(--plate-ln);
+  font-family: var(--f-mono); font-size: .58rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--plate-mu);
+}
+
+.facts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(175px,1fr));
+  border-top: 1px solid var(--edge);
+}
+.fact {
+  position: relative; padding: 1.2rem 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--rule); border-left: 1px solid var(--rule);
+  display: flex; flex-direction: column; gap: .4rem;
+}
+.fact:first-child { border-left: 0; padding-left: 0; }
+.fact-n {
+  font-family: var(--f-disp); font-weight: 600;
+  font-size: clamp(2.6rem,5.5vw,4.4rem); line-height: .85;
+  letter-spacing: -.005em; font-variant-numeric: tabular-nums;
+}
+.fact-k { color: var(--ink-3); line-height: 1.55; }
+.fact::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--hot); transition: width .6s var(--e); }
+.fact:hover::after { width: 100%; }
+
+.aside-note {
+  margin-top: clamp(2rem,5vw,3rem);
+  display: grid; grid-template-columns: auto minmax(0,1fr); gap: 1.1rem;
+  align-items: start; max-width: 64ch;
+  padding-top: 1.1rem; border-top: 1px solid var(--rule);
+}
+.an-k {
+  font-family: var(--f-mono); font-size: .6rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--accent); padding-top: .3rem;
+}
+.aside-note p { color: var(--ink-2); font-size: .99rem; }
+
+/* ══════════════════════════════════════════════════════════
+   02 EXPERIENCE — scroll-scrub timeline
+   A rail draws down the centre; cards hinge in from their own
+   side as they approach. --p is written per-item by JS (0→1).
+   The node and leader are absolute, but only inside the
+   centre gutter the grid has already reserved for them.
+   ══════════════════════════════════════════════════════════ */
+.tl { position: relative; }
+.tl-rail {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: 0; bottom: 0; width: 2px; background: var(--rule-2);
+}
+.tl-rail i { display: block; width: 100%; height: 0%; background: var(--ink); }
+
+.tl-item {
+  position: relative;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(2.5rem, 8vw, 6rem);
+  padding-bottom: clamp(2rem, 5vw, 3.5rem);
+  perspective: 1400px;
+  --p: 0;
+}
+.tl-l .tl-card { grid-column: 1; transform-origin: right center; }
+.tl-r .tl-card { grid-column: 2; transform-origin: left center; }
+
+.tl-card {
+  background: var(--sheet-2);
+  border: 1px solid var(--edge);
+  padding: clamp(1.1rem,2.2vw,1.7rem);
+  opacity: calc(.12 + var(--p) * .88);
+  will-change: transform;
+}
+.tl-l .tl-card {
+  transform: translateX(calc((1 - var(--p)) * -70px))
+             rotateY(calc((1 - var(--p)) * 18deg));
+}
+.tl-r .tl-card {
+  transform: translateX(calc((1 - var(--p)) * 70px))
+             rotateY(calc((1 - var(--p)) * -18deg));
+}
+
+/* node on the rail — fills orange when its card lands */
+.tl-node {
+  position: absolute; top: 1.9rem; left: 50%;
+  width: 13px; height: 13px; margin-left: -6.5px;
+  background: var(--sheet); border: 1px solid var(--edge);
+  transform: rotate(45deg) scale(calc(.6 + var(--p) * .4));
+  transition: background .4s var(--e);
+}
+.tl-item.on .tl-node { background: var(--hot); border-color: var(--hot); }
+
+/* dashed leader from rail to card */
+.tl-leader {
+  position: absolute; top: 2.35rem; height: 1px;
+  background-image: linear-gradient(90deg, var(--ink-3) 0 4px, transparent 4px 8px);
+  background-size: 8px 1px;
+  opacity: calc(var(--p) * .8);
+  transition: opacity .4s;
+}
+.tl-l .tl-leader { right: 50%; width: clamp(1.25rem, 4vw, 3rem); }
+.tl-r .tl-leader { left: 50%;  width: clamp(1.25rem, 4vw, 3rem); }
+
+.tl-top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: .9rem; }
+.tl-no {
+  font-family: var(--f-disp); font-weight: 600;
+  font-size: clamp(2rem,3.5vw,3rem); line-height: .8; color: var(--sheet-4);
+  transition: color .5s var(--e);
+}
+.tl-item.on .tl-no { color: var(--accent); }
+.tl-date { color: var(--ink-3); }
+.tl-role {
+  font-family: var(--f-disp); font-weight: 600;
+  font-size: clamp(1.5rem,3vw,2.4rem);
+  line-height: .95; text-transform: uppercase; margin-bottom: .35rem;
+}
+.tl-org {
+  font-size: 1.02rem; font-weight: 500; color: var(--accent);
+  margin-bottom: 1.1rem; display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+}
+.tl-live {
+  font-family: var(--f-mono); font-style: normal; font-size: .52rem;
+  letter-spacing: .16em; text-transform: uppercase;
+  border: 1px solid var(--accent); padding: .14rem .4rem;
+}
+.tl-list { display: flex; flex-direction: column; gap: .6rem; }
+.tl-list li { position: relative; padding-left: 1.05rem; font-size: .95rem; line-height: 1.6; color: var(--ink-2); }
+.tl-list li::before { content: ""; position: absolute; left: 0; top: .68em; width: 6px; height: 1px; background: var(--hot); }
+.tl-list b { color: var(--ink); font-weight: 600; }
+.tl-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: 1.2rem; }
+.tl-tags span {
+  font-family: var(--f-mono); font-size: .56rem; letter-spacing: .1em;
+  text-transform: uppercase; padding: .26rem .48rem;
+  border: 1px solid var(--rule); color: var(--ink-3);
+}
+
+/* ══════════════════════════════════════════════════════════
+   03 SELECTED WORK — stacked cards (unchanged device)
+   ══════════════════════════════════════════════════════════ */
+.stack { position: relative; }
+.pj {
+  position: sticky; top: var(--stick);
+  display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr);
+  gap: clamp(1.1rem,2.6vw,2.6rem);
+  min-height: clamp(350px,52vh,470px);
+  padding: clamp(1.3rem,2.6vw,2.2rem);
+  margin-bottom: 1rem;
+  background: var(--sheet-2);
+  border: 1px solid var(--edge);
+  transform-origin: top center; will-change: transform;
+}
+.pj-l { display: flex; flex-direction: column; min-width: 0; }
+.pj-no { font-family: var(--f-mono); font-size: .63rem; letter-spacing: .18em; color: var(--accent); margin-bottom: .9rem; }
+.pj-title {
+  font-family: var(--f-disp); font-weight: 600;
+  font-size: clamp(1.9rem,4.5vw,3.6rem);
+  line-height: .92; text-transform: uppercase; margin-bottom: .45rem;
+}
+.pj-kind { color: var(--ink-3); margin-bottom: 1rem; }
+.pj-txt { color: var(--ink-2); max-width: 48ch; font-size: .99rem; margin-bottom: auto; }
+.pj-txt b { color: var(--ink); }
+.pj-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin: 1.2rem 0 1rem; }
+.pj-tags span {
+  font-family: var(--f-mono); font-size: .56rem; letter-spacing: .1em;
+  text-transform: uppercase; padding: .26rem .48rem;
+  border: 1px solid var(--rule); color: var(--ink-3);
+}
+.pj-cta {
+  align-self: flex-start; position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: .56rem 1.05rem; border: 1px solid var(--edge);
+  font-family: var(--f-mono); font-size: .61rem;
+  letter-spacing: .14em; text-transform: uppercase;
+}
+.pj-cta span, .pj-cta i { position: relative; z-index: 2; font-style: normal; transition: color .35s; }
+.pj-cta::before { content: ""; position: absolute; inset: 0; background: var(--ink); transform: translateY(101%); transition: transform .45s var(--e); }
+.pj-cta:hover::before { transform: none; }
+.pj-cta:hover span, .pj-cta:hover i { color: var(--sheet); }
+
+.pj-r { position: relative; overflow: hidden; min-height: 170px; }
+.pj-art { position: absolute; inset: 0; display: grid; place-items: center; gap: .4rem; }
+/* Every panel carries #fff art, so every panel stays a deep
+   fill — including the two that used to be solid --ink back
+   when --ink was navy. */
+.pj-r-1 { background: var(--teal); }
+.pj-r-2 { background: var(--fill-hot); }
+.pj-r-3 { background: var(--fill-dk); }
+.pj-r-4 { background: var(--cyan); }
+.pj-r-5 { background: var(--steel); }
+.pj-r-6 { background: var(--violet); }
+.pj-r-7 { background: var(--fill-dk); }
+
+/* card 06 names three sites, so each name links to its own */
+.pj-link { color: inherit; text-decoration: none; transition: color .2s; }
+.pj-link:hover, .pj-link:focus-visible { color: var(--accent); }
+
+/* ── THE PRINTS (all seven panels) ──
+   Every panel carries the actual thing: five screenshots, one
+   architecture diagram and one concept frame. The panel fill
+   colour only shows while an image is still loading.
+
+   width/height are on each <img> so the panel reserves its
+   box before the file lands. */
+.pj-shot {
+  position: absolute; inset: 0; margin: 0;
+}
+/* Prints now bleed: each image fills the whole panel (cover),
+   so nothing sits as a small strip in a field of fill colour.
+   object-position favours the left/top, where the captures put
+   their headline content. */
+.pj-shot img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: left center;
+}
+
+/* ── the one exception: the Aura AI plate ──
+   cover is right for a photograph, where a crop costs you some
+   scenery. It is wrong for a drawing, where the crop costs you
+   stages 01 and 04 and the line that the whole diagram exists
+   to show. At the panel's desktop ratio cover would shave the
+   right-hand chips; on a phone it eats the title band and the
+   spec strip. So this one contains, and letterboxes against the
+   panel fill — which is what a plate mounted on board looks
+   like anyway. It is an SVG, so it stays sharp at any size. */
+.pj-shot-dia img { object-fit: contain; object-position: center; }
+
+/* ══════════════════════════════════════════════════════════
+   04 SKILLS
+   ══════════════════════════════════════════════════════════ */
+.field { border-top: 1px solid var(--edge); }
+.field-row {
+  display: grid; grid-template-columns: clamp(120px,15vw,195px) minmax(0,1fr);
+  gap: clamp(1rem,3vw,2.5rem); align-items: baseline;
+  padding: clamp(1rem,2.2vw,1.7rem) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.field-k { color: var(--ink-3); display: flex; align-items: center; gap: .5rem; }
+.dot { width: 8px; height: 8px; flex: 0 0 auto; }
+.dot-1 { background: var(--teal) }   .dot-2 { background: var(--accent) }
+.dot-3 { background: var(--cyan) }   .dot-4 { background: var(--steel) }
+.dot-5 { background: var(--violet) } .dot-6 { background: var(--ink) }
+.field-items { display: flex; flex-wrap: wrap; gap: clamp(.5rem,1.3vw,1rem); }
+.fi {
+  font-family: var(--f-disp); font-weight: 500;
+  font-size: clamp(1.15rem,2.4vw,2rem);
+  text-transform: uppercase; line-height: 1.1;
+  color: var(--ink-2); cursor: var(--cur-draw);
+  will-change: transform; transition: color .3s;
+}
+.fi.near { color: var(--ink); }
+.fi.hot  { color: var(--accent); }
+
+/* ══════════════════════════════════════════════════════════
+   05 CONTACT
+   ══════════════════════════════════════════════════════════ */
+.sec-contact { border-bottom: 0; }
+
+/* ── LAYOUT ──
+   The headline gets the full width of the sheet; the call, the
+   schedule and the plate sit beneath it. The old arrangement
+   put the headline in 1.45fr beside a plate, which meant the
+   one element that should dominate was competing for room.
+
+   .ct-body then runs two columns, with the schedule spanning
+   both rows on the right so the call stacks above the plate on
+   the left. align-items:start, per the file's grid policy. */
+.ct-wrap { display: block; }
+.ct-body {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.1fr);
+  grid-template-areas:
+    "call  sched"
+    "plate sched";
+  gap: clamp(1.2rem,3vw,2.2rem) clamp(1.4rem,3.5vw,3rem);
+  align-items: start;
+  margin-top: clamp(1.8rem,4.5vw,3rem);
+}
+.ct-call  { grid-area: call; min-width: 0; }
+.ct-plate { grid-area: plate; }
+.ct-sched { grid-area: sched; min-width: 0; }
+/* ── THE DEVICE: the section dimensions itself ──
+   The headline block and the email are both treated as parts
+   on a drawing: extension arrows strike out, the dimension
+   rule draws between them, then the measured figure arrives.
+   One motif at two scales rather than two unrelated tricks.
+
+   Replaces the old per-glyph mask reveal on the headline and
+   the cursor char-wave on the email. The wave had to go for a
+   reason beyond novelty: it was proximity-driven character
+   lean, which is the same device the Skills field already
+   owns, so the page was spending two sections on one idea. */
+.ct-top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "vdim head"
+    ".    hdim";
+  column-gap: clamp(.55rem, 1.6vw, 1.1rem);
+  align-items: start;
+}
+.ct-head  { grid-area: head; }
+.cdim-v   { grid-area: vdim; }
+.cdim-h   { grid-area: hdim; }
+
+.ct-head {
+  font-family: var(--f-disp); font-weight: 700;
+  font-size: clamp(3rem,11vw,9rem);
+  line-height: .84; text-transform: uppercase;
+}
+/* each line is its own mask — the whole line rises, where the
+   hero works glyph by glyph. Pure CSS: no JS splitting, so
+   there is nothing to re-run on resize. */
+.ct-l { display: block; overflow: hidden; }
+.ct-l > span {
+  display: block;
+  transform: translateY(104%);
+  transition: transform 1.05s var(--e);
+}
+.ct-wrap.in .ct-l > span { transform: none; }
+.ct-wrap.in .ct-l:nth-child(1) > span { transition-delay: .04s }
+.ct-wrap.in .ct-l:nth-child(2) > span { transition-delay: .12s }
+.ct-wrap.in .ct-l:nth-child(3) > span { transition-delay: .20s }
+.ct-wrap.in .ct-l:nth-child(4) > span { transition-delay: .28s }
+.ct-i { color: var(--accent); }
+
+/* ── the dimension apparatus ──
+   Arrowheads live on the container, never on .cdim-rule: the
+   rule is the thing that scales, and a child of a scaled box
+   gets squashed with it. */
+.cdim { position: relative; display: block; }
+.cdim::before, .cdim::after {
+  content: ""; position: absolute;
+  width: 0; height: 0;
+  opacity: 0; transition: opacity .3s linear .72s;
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+}
+.ct-wrap.in .cdim::before, .ct-wrap.in .cdim::after { opacity: 1; }
+
+.cdim-rule { display: block; background: var(--ink-3); }
+.cdim-txt {
+  position: absolute;
+  font-family: var(--f-mono); font-size: .58rem; font-weight: 400;
+  letter-spacing: .13em; text-transform: uppercase;
+  color: var(--ink-3); white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  background: var(--sheet); padding: 0 .3em;
+  opacity: 0; transition: opacity .45s linear .78s;
+}
+.ct-wrap.in .cdim-txt { opacity: 1; }
+
+/* vertical — overall height of the headline */
+.cdim-v { align-self: stretch; width: 11px; }
+.cdim-v .cdim-rule {
+  width: 1px; height: 100%; margin: 0 auto;
+  transform: scaleY(0); transform-origin: top center;
+  transition: transform .85s var(--e-io) .1s;
+}
+.ct-wrap.in .cdim-v .cdim-rule { transform: none; }
+.cdim-v::before { top: 0;    left: 50%; margin-left: -3.5px; border-bottom: 6px solid var(--ink-3); }
+.cdim-v::after  { bottom: 0; left: 50%; margin-left: -3.5px; border-top:    6px solid var(--ink-3); }
+.cdim-v .cdim-txt {
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) rotate(-90deg);
+  transform-origin: center;
+}
+
+/* horizontal — overall width of the headline, and the email */
+.cdim-h, .cdim-m { height: 11px; margin-top: .55rem; }
+.cdim-m { margin-top: .75rem; }
+.cdim-h .cdim-rule, .cdim-m .cdim-rule {
+  height: 1px; width: 100%; margin: 5px 0 0;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform .85s var(--e-io) .1s;
+}
+.ct-wrap.in .cdim-h .cdim-rule,
+.ct-wrap.in .cdim-m .cdim-rule { transform: none; }
+.cdim-h::before, .cdim-m::before {
+  left: 0; top: 5px; margin-top: -3.5px;
+  border-right: 6px solid var(--ink-3); border-left: 0;
+}
+.cdim-h::after, .cdim-m::after {
+  right: 0; top: 5px; margin-top: -3.5px;
+  border-left: 6px solid var(--ink-3); border-right: 0;
+}
+.cdim-h .cdim-txt, .cdim-m .cdim-txt {
+  left: 50%; top: 50%; transform: translate(-50%,-50%);
+}
+
+.ct-copy {
+  max-width: 46ch; color: var(--ink-2);
+  font-size: clamp(.98rem,1.2vw,1.15rem);
+  margin: clamp(1.2rem,3vw,2rem) 0 clamp(1.6rem,4vw,2.4rem);
+}
+.ct-mail {
+  justify-self: start;
+  font-family: var(--f-disp); font-weight: 600;
+  font-size: clamp(1.4rem,4.5vw,3.4rem);
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--accent); padding-bottom: .04em;
+  max-width: 100%; word-break: break-word;
+}
+/* the email's own rule re-strikes on hover — the only part of
+   the device that answers the pointer rather than the scroll */
+.ct-mail { position: relative; }
+.ct-mail::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 2px; background: var(--hot);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform .5s var(--e);
+}
+.ct-mail:hover::after, .ct-mail:focus-visible::after { transform: none; }
+/* Teal is a different ground from --plate-bg, so this plate
+   needs its own PAIR — muted label and display mark both
+   re-cut against it. Overriding the tokens rather than the
+   rules keeps spine, labels, foot and mark moving together,
+   and replaces the hard-coded hex that used to live here. */
+.ct-plate {
+  background: var(--teal);
+  --plate-mu:   #C7D5C9;
+  --plate-mark: #E0A05E;
+}
+
+/* ── THE SCHEDULE ──
+   Every drawing carries one. The channels used to be a flat
+   list of full-bleed rows; they are now a ruled schedule with
+   a header and a reference column — which is how a drawing
+   states a parts list, and reads as tabular data rather than
+   as four more navigation bars.
+
+   Column rules are what make it a schedule rather than a list,
+   so the grid is shared between the header and the rows via a
+   single custom property: change the columns once and the
+   header cannot drift out of alignment with the body. */
+.ct-sched {
+  --cs-cols: clamp(34px,4.5vw,52px) clamp(68px,8vw,104px) minmax(0,1fr) auto;
+  border: 1px solid var(--edge);
+}
+.cs-head, .cs-row {
+  display: grid; grid-template-columns: var(--cs-cols);
+  gap: clamp(.5rem,1.4vw,1rem);
+  align-items: center;
+  padding: .62rem .8rem;
+}
+.cs-head {
+  background: var(--sheet-2);
+  border-bottom: 1px solid var(--edge);
+  font-family: var(--f-mono); font-size: .58rem;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--ink-3);
+}
+.cs-row {
+  position: relative;
+  border-bottom: 1px solid var(--rule-2);
+  transition: background .35s var(--e);
+}
+.cs-row:last-child { border-bottom: 0; }
+/* the ref bar grows out of the left edge — a lighter touch
+   than the full-slab wipe the old rows used, because a
+   schedule row is data being read, not a button being aimed at */
+.cs-row::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--hot);
+  transform: scaleY(0); transform-origin: center;
+  transition: transform .4s var(--e);
+}
+.cs-row:hover, .cs-row:focus-visible { background: var(--sheet-3); }
+.cs-row:hover::before, .cs-row:focus-visible::before { transform: none; }
+
+.cs-ref { color: var(--ink-3); font-variant-numeric: tabular-nums; transition: color .3s; }
+.cs-row:hover .cs-ref { color: var(--accent); }
+.cs-ch  { color: var(--ink-3); }
+.cs-v   { font-size: 1.0rem; min-width: 0; overflow-wrap: anywhere; }
+.cs-a   { font-style: normal; color: var(--ink-3); transition: transform .45s var(--e), color .3s; }
+.cs-row:hover .cs-a { transform: translate(3px,-3px); color: var(--accent); }
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER — a drawing title block
+   ══════════════════════════════════════════════════════════ */
+.foot { border-top: 1px solid var(--edge); }
+
+/* ── STATUS STRIP ──
+   Replaces the scrolling AVAILABLE FOR WORK marquee, which
+   stated one fact and then repeated it six times to fill the
+   band. This states it once and spends the rest of the width
+   on the two facts that actually follow from it. */
+.foot-status {
+  background: var(--ink); color: var(--sheet);
+  /* full-bleed band, but its contents line up with the title
+     block below — which sits flush to --max rather than inset
+     by --pad like the sections do. The max() keeps the band's
+     own edge padding on narrow screens. */
+  padding: clamp(.8rem,2vw,1.15rem) max(var(--pad), calc((100% - var(--max)) / 2));
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: .6rem clamp(1.2rem,4vw,3rem);
+}
+.fs-big {
+  font-family: var(--f-disp); font-weight: 600;
+  font-size: clamp(1.3rem,3.4vw,2.4rem);
+  text-transform: uppercase; line-height: 1; margin-right: auto;
+}
+.fs-cell { display: flex; flex-direction: column; gap: .1rem; }
+.fs-k { color: var(--plate-mu); }
+.fs-v { font-size: .9rem; font-weight: 500; }
+
+/* ── TITLE BLOCK ──
+   A real one is asymmetric: a dominant principal cell carrying
+   authorship, with smaller metadata cells nested around it.
+   The old footer was an even auto-fit grid of equal cells —
+   a toolbar wearing a title block's labels. Placed with
+   explicit areas here, so the hierarchy is actually there.
+
+   Cell rules come from a single outer border plus one border
+   per cell, never two adjacent borders, so nothing doubles
+   up into a 2px line at the seams. */
+.title-block {
+  max-width: var(--max); margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0,1.7fr) minmax(0,.65fr) minmax(0,.65fr);
+  grid-template-areas:
+    "name  sheet rev"
+    "name  date  scale"
+    "notes notes top";
+  border-left: 1px solid var(--rule);
+}
+.tbk {
+  display: flex; flex-direction: column; gap: .2rem;
+  padding: .9rem 1rem;
+  border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+.tbk-name  { grid-area: name; justify-content: center; gap: .3rem; }
+.tbk-sheet { grid-area: sheet; }
+.tbk-rev   { grid-area: rev; }
+.tbk-date  { grid-area: date; }
+.tbk-scale { grid-area: scale; }
+.tbk-notes { grid-area: notes; }
+.tbk-btn   { grid-area: top; }
+
+.tbk-k { color: var(--ink-3); }
+.tbk-v { font-size: .9rem; font-weight: 500; }
+/* the principal cell is the only place the footer raises its
+   voice — everything else stays at label scale */
+.tbk-name-v {
+  font-family: var(--f-disp); font-weight: 700;
+  font-size: clamp(1.9rem,5vw,3.4rem);
+  text-transform: uppercase; line-height: .9;
+}
+.tbk-name-s { color: var(--ink-2); font-size: .88rem; }
+.tbk-revv { color: var(--accent); }
+.tbk-btn { transition: background .3s; }
+.tbk-btn:hover { background: var(--ink); }
+.tbk-btn:hover .tbk-k, .tbk-btn:hover .tbk-v { color: var(--sheet); }
+
+/* ══════════════════════════════════════════════════════════
+   REVEALS
+   ══════════════════════════════════════════════════════════ */
+[data-rv] { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--e) var(--d,0s), transform .9s var(--e) var(--d,0s); }
+[data-rv].in { opacity: 1; transform: none; }
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 1180px) {
+  .tb-nav { display: none; }
+  .tb-burger { display: block; }
+  .topbar { grid-template-columns: auto minmax(0,1fr); }
+  .tb-nav.open {
+    display: flex; position: fixed; inset: 0;
+    flex-direction: column; align-items: flex-start; justify-content: center;
+    gap: .3rem; padding: var(--hdr) var(--pad) 0; background: var(--sheet);
+  }
+  /* backdrop-filter makes .tb-inner a containing block for
+     fixed children, which would trap the menu inside the
+     floating bar. Drop the filter while the menu is open. */
+  .topbar.menu-open .tb-inner {
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    box-shadow: none; border-color: transparent; background: transparent;
+  }
+  .tb-nav.open a { font-family: var(--f-disp); font-weight: 600; font-size: clamp(2.2rem,9vw,4rem); text-transform: uppercase; color: var(--ink); gap: 1rem; }
+  .tb-nav.open a em { font-family: var(--f-mono); font-size: .68rem; color: var(--accent); }
+  /* the mark scales with the type it underscores — at display
+     size a 9px stroke box would read as a hairline accident */
+  .tb-nav.open .nav-ul { height: 18px; bottom: 2px; }
+  .tb-nav.open .nul-a { stroke-width: 2.4; }
+  .tb-nav.open .nul-b { stroke-width: 1.6; }
+}
+
+/* timeline collapses to a single left-railed column */
+@media (max-width: 900px) {
+  .ab-pair { grid-template-columns: 1fr; }
+  /* unstacked, the paragraph has the whole sheet to run across
+     — cap it back to a readable measure */
+  .readalong { max-width: 62ch; }
+  .plate { min-height: 210px; }
+  .hero-foot { grid-template-columns: 1fr; }
+  .pj { grid-template-columns: 1fr; }
+  .pj-r { order: -1; min-height: 140px; }
+  /* a contained wide capture needs more than 140px of board
+     before it stops being a thumbnail of itself */
+  .pj-r:has(.pj-shot) { min-height: 200px; }
+  .field-row { grid-template-columns: 1fr; gap: .55rem; }
+
+  /* contact unstacks: call, then the schedule, then the plate */
+  .ct-body {
+    grid-template-columns: minmax(0,1fr);
+    grid-template-areas: "call" "sched" "plate";
+  }
+
+  /* the title block keeps its asymmetry but on two columns:
+     the principal cell goes full width and the metadata pairs
+     off beneath it */
+  .title-block {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    grid-template-areas:
+      "name  name"
+      "sheet rev"
+      "date  scale"
+      "notes notes"
+      "top   top";
+  }
+
+  .tl-rail { left: 7px; transform: none; }
+  .tl-item { grid-template-columns: 1fr; gap: 0; padding-left: 2.6rem; }
+  .tl-l .tl-card, .tl-r .tl-card {
+    grid-column: 1; transform-origin: left center;
+    transform: translateX(calc((1 - var(--p)) * 40px)) rotateY(calc((1 - var(--p)) * -12deg));
+  }
+  .tl-node { left: 7px; margin-left: -6.5px; }
+  .tl-l .tl-leader, .tl-r .tl-leader { left: 7px; right: auto; width: 1.9rem; }
+}
+
+@media (max-width: 620px) {
+  :root { --hdr: 4rem; }
+  .hero-links { grid-template-columns: 1fr; }
+  .hl:nth-child(even) { border-left: 0; }
+  .spec { gap: 1rem 1.6rem; }
+  .seal { margin-left: 0; }
+  .facts { grid-template-columns: 1fr; }
+  .fact { border-left: 0; padding-left: 0; }
+  .tb-clock { display: none; }
+
+  /* the schedule drops its Ref column and wraps the value onto
+     its own line — three narrow columns plus a URL does not
+     fit a phone, and the ref numbers are the least load-bearing
+     thing in the table */
+  .ct-sched { --cs-cols: clamp(68px,22vw,104px) minmax(0,1fr) auto; }
+  .cs-ref, .cs-head > :first-child { display: none; }
+
+  /* the height dimension costs a column the headline needs
+     more. The two width dimensions stay — they read fine at
+     any measure, and the device survives on one axis. */
+  .cdim-v { display: none; }
+  .ct-top {
+    grid-template-columns: minmax(0,1fr);
+    grid-template-areas: "head" "hdim";
+  }
+
+  /* title block goes to one column; the principal cell keeps
+     its scale so the footer still has a focal point */
+  .title-block {
+    grid-template-columns: minmax(0,1fr);
+    grid-template-areas: "name" "sheet" "rev" "date" "scale" "notes" "top";
+  }
+  .ticks { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+  .hero-bio, .hero-links, .seal, .ht-sub em, .dim { opacity: 1 !important; transform: none !important; }
+  .dim-line { transform: none !important; }
+  /* contact dimensions render already struck, figures already
+     settled — contactDims() writes the measured value straight
+     in when REDUCED, so nothing here has to fake a number */
+  .ct-l > span, .cdim-rule { transform: none !important; }
+  .cdim::before, .cdim::after, .cdim-txt { opacity: 1 !important; }
+  .cdim-v .cdim-txt { transform: translate(-50%,-50%) rotate(-90deg) !important; }
+  .cdim-h .cdim-txt, .cdim-m .cdim-txt { transform: translate(-50%,-50%) !important; }
+  .hero-type-wrap::before { opacity: 1 !important; }
+  /* the exposure reveal renders already developed */
+  .ch-c > i {
+    opacity: 1 !important; transform: none !important;
+    filter: none !important; font-variation-settings: 'wght' 700 !important;
+  }
+  .plot-head { display: none; }
+  .topo { animation: none; transform: none !important; }
+  .ht-line { transform: none !important; }
+  [data-rv] { opacity: 1; transform: none; }
+  .readalong .wd { color: var(--ink); }
+  /* the mark is still the mark — it just doesn't get drawn */
+  .nav-ul path { transition: none; }
+  .tl-item { --p: 1; }
+  .tl-card { transform: none !important; opacity: 1 !important; }
+  .pj { position: static; transform: none !important; opacity: 1 !important; }
+}

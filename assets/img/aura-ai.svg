@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" width="960" height="720" role="img"
+     aria-label="Aura AI hybrid architecture: patient input, silent LLaMA inference producing a hidden category, then a Python gatekeeper that verifies identity and device against SQLite before any deterministic output reaches the UI.">
+  <title>Aura AI — the Gatekeeper Pattern</title>
+
+  <!-- Drawn, not screenshotted. Aura AI is a backend with a
+       Streamlit shell: a capture of it would show a chat box
+       and hide the one thing worth showing, which is WHERE the
+       model's authority ends. So this panel is the architecture
+       itself, set in the sheet's own palette — cream stock,
+       olive ink, one brick mark — so it reads as another plate
+       from the same drawing rather than a graphic pasted on.
+
+       Content is taken from the project README: the four-stage
+       Gatekeeper Pattern, the model/training line and the
+       runtime stack. System font stacks only — an SVG loaded
+       through <img> gets its own document and never sees the
+       page's webfonts. -->
+
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#504B38"/>
+    </marker>
+  </defs>
+
+  <style>
+    .mono  { font-family: ui-monospace, "Cascadia Mono", "Consolas", "DejaVu Sans Mono", monospace; }
+    .sans  { font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+    .ink   { fill: #504B38; }
+    .mute  { fill: #635C46; }
+    .brick { fill: #8A3F14; }
+    .ttl   { font-size: 27px; font-weight: 600; }
+    .body  { font-size: 19px; }
+    .lab   { font-size: 15px; letter-spacing: 1.6px; }
+  </style>
+
+  <!-- stock + sheet border -->
+  <rect width="960" height="720" fill="#F8F3D9"/>
+  <rect x="10.5" y="10.5" width="939" height="699" fill="none" stroke="#504B38" stroke-width="1"/>
+
+  <!-- ── title block ── -->
+  <text class="sans ink" x="44" y="86" font-size="50" font-weight="700" letter-spacing="1.5">AURA AI</text>
+  <text class="mono mute" x="916" y="60" font-size="15" letter-spacing="2" text-anchor="end">FIG. D</text>
+  <text class="mono mute" x="916" y="86" font-size="15" letter-spacing="2" text-anchor="end">HYBRID ARCHITECTURE</text>
+  <text class="mono mute lab" x="44" y="116">REMOTE PATIENT MONITORING &#183; THE GATEKEEPER PATTERN</text>
+  <line x1="44" y1="134" x2="916" y2="134" stroke="#504B38" stroke-width="1"/>
+
+  <!-- ══ 01 · patient input ══ -->
+  <rect x="44" y="156" width="872" height="88" fill="#EBE5C2" stroke="#504B38" stroke-width="1.5"/>
+  <text class="mono brick" x="70" y="192" font-size="20" letter-spacing="1.5">01</text>
+  <text class="sans ink ttl" x="118" y="194">PATIENT INPUT</text>
+  <text class="sans mute body" x="118" y="222">A need, stated in plain language.</text>
+  <rect x="800" y="180" width="92" height="30" fill="none" stroke="#B9B28A" stroke-width="1"/>
+  <text class="mono mute lab" x="846" y="200" text-anchor="middle">UI</text>
+
+  <path d="M480,244 L480,272" stroke="#504B38" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- ══ 02 · silent inference ══ -->
+  <rect x="44" y="280" width="872" height="88" fill="#EBE5C2" stroke="#504B38" stroke-width="1.5"/>
+  <text class="mono brick" x="70" y="316" font-size="20" letter-spacing="1.5">02</text>
+  <text class="sans ink ttl" x="118" y="318">SILENT INFERENCE</text>
+  <text class="sans mute body" x="118" y="346">LLaMA 3.1 8B reads the text and emits one hidden category.</text>
+  <rect x="800" y="304" width="92" height="30" fill="none" stroke="#B9B28A" stroke-width="1"/>
+  <text class="mono mute lab" x="846" y="324" text-anchor="middle">LLM</text>
+
+  <path d="M480,368 L480,398" stroke="#504B38" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- ══ THE BOUNDARY ══
+       The whole point of the drawing. Dashed, because it is a
+       policy line rather than a component. -->
+  <line x1="44" y1="414" x2="916" y2="414" stroke="#8A3F14" stroke-width="1.5" stroke-dasharray="7 6"/>
+  <!-- knockout for the label. Kept clear of the arrowhead above
+       (tip lands at ~399) and the one below (starts at 430). -->
+  <rect x="320" y="402" width="320" height="24" fill="#F8F3D9"/>
+  <text class="mono brick" x="480" y="420" font-size="16" letter-spacing="1.8" text-anchor="middle">THE MODEL STOPS HERE</text>
+
+  <path d="M480,430 L480,458" stroke="#504B38" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- ══ 03 · python gatekeeper ══ -->
+  <rect x="44" y="466" width="872" height="88" fill="#EBE5C2" stroke="#504B38" stroke-width="1.5"/>
+  <text class="mono brick" x="70" y="502" font-size="20" letter-spacing="1.5">03</text>
+  <text class="sans ink ttl" x="118" y="504">PYTHON GATEKEEPER</text>
+  <text class="sans mute body" x="118" y="532">Verifies name and DOB, queries SQLite, confirms the device.</text>
+  <rect x="800" y="490" width="92" height="30" fill="#504B38"/>
+  <text class="mono lab" x="846" y="510" fill="#F8F3D9" text-anchor="middle">PYTHON</text>
+
+  <path d="M480,554 L480,582" stroke="#504B38" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- ══ 04 · deterministic output ══ -->
+  <rect x="44" y="590" width="872" height="88" fill="#EBE5C2" stroke="#504B38" stroke-width="1.5"/>
+  <text class="mono brick" x="70" y="626" font-size="20" letter-spacing="1.5">04</text>
+  <text class="sans ink ttl" x="118" y="628">DETERMINISTIC OUTPUT</text>
+  <text class="sans mute body" x="118" y="656">Only verified state renders. No hallucinated hardware or identity.</text>
+  <rect x="800" y="614" width="92" height="30" fill="#504B38"/>
+  <text class="mono lab" x="846" y="634" fill="#F8F3D9" text-anchor="middle">PYTHON</text>
+
+  <!-- ── spec strip ──
+       Two lines on one baseline, so they are budgeted: at 14px
+       mono with 1.4 tracking the advance is ~9.8px, which puts
+       the left string at ~421px wide and the right at ~363px.
+       872px of rule, 88px of clear air between them. Lengthen
+       either string and they touch. -->
+  <text class="mono mute" x="44" y="700" font-size="14" letter-spacing="1.4">LLAMA 3.1 8B &#183; LoRA SFT 4-BIT &#183; GGUF Q4_K_M</text>
+  <text class="mono mute" x="916" y="700" font-size="14" letter-spacing="1.4" text-anchor="end">STREAMLIT &#183; LLAMA-CPP-PYTHON &#183; SQLITE</text>
+</svg>
