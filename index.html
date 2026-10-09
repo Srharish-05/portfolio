@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!-- viewport-fit=cover lets the fixed background layers run edge to
+     edge under a notch; --pad in the stylesheet re-insets the
+     CONTENT off env(safe-area-inset-*) so nothing readable lands
+     under the cutout. theme-color paints the mobile browser chrome
+     the colour of the stock, so the sheet does not end in a band. -->
+<meta name="theme-color" content="#F8F3D9" />
 <title>Harish S — Engineer</title>
 <meta name="description" content="Harish S. Final-year ECE undergraduate. Ships production web, Android and AI systems." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,7 +87,8 @@
 
     <div class="tb-right">
       <a href="mailto:srharish05@gmail.com?subject=Opportunity%20for%20Harish%20S" class="tb-cta" data-c="open">Hire me</a>
-      <button class="tb-burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button>
+      <button class="tb-burger" id="burger" aria-label="Menu"
+              aria-controls="tbNav" aria-expanded="false"><i></i><i></i><i></i></button>
     </div>
   </div>
 </header>
@@ -607,7 +614,8 @@
           <span class="cs-v">harish-s05</span><span class="cs-a">↗</span>
         </a>
       </div>
-
+    </div><!-- /.ct-body -->
+  </div><!-- /.ct-wrap -->
 </section>
 
 </main>

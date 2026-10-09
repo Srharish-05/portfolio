@@ -114,7 +114,15 @@
   --hdr:   4.5rem;
   --stick: calc(var(--hdr) + 1.25rem);
 
-  --pad: clamp(1.1rem, 4.5vw, 4rem);
+  /* The sheet's side gutter. Every horizontal page inset in
+     this file goes through it, so the notch and the rounded
+     corners of a phone in landscape are handled in exactly
+     one place: a device with no safe area reports 0px and the
+     max() resolves to the authored clamp, unchanged. */
+  --pad-base: clamp(1.1rem, 4.5vw, 4rem);
+  --pad: max(var(--pad-base),
+             env(safe-area-inset-left,  0px),
+             env(safe-area-inset-right, 0px));
   --max: 1500px;
 
   --e:    cubic-bezier(.19,1,.22,1);
@@ -137,7 +145,17 @@ body {
   font-size: clamp(.97rem, 1.02vw, 1.06rem);
   font-weight: 350;
   line-height: 1.6;
+  /* Belt for anything that overshoots the gutter at a width
+     nobody tested. `clip` rather than `hidden` on purpose:
+     `hidden` makes <body> a scroll container, and the Work
+     cards' position:sticky then resolves against the body box
+     instead of the viewport — which is the classic way a
+     sticky stack dies silently on a narrow screen. `clip`
+     only clips painting, so the viewport stays the
+     scrollport. `hidden` is left in front of it as the
+     fallback for engines without `clip`. */
   overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 body.lock { overflow: hidden; }
@@ -298,7 +316,10 @@ main, .topbar, .foot { position: relative; z-index: 2; }
   position: fixed; inset: 0; z-index: 9999;
   background: var(--sheet);
   display: flex; flex-direction: column; justify-content: space-between;
-  padding: clamp(1.2rem,4vw,2.6rem) var(--pad);
+  padding:
+    calc(clamp(1.2rem,4vw,2.6rem) + env(safe-area-inset-top, 0px))
+    var(--pad)
+    calc(clamp(1.2rem,4vw,2.6rem) + env(safe-area-inset-bottom, 0px));
   transition: transform 1s var(--e-io), visibility 1s;
 }
 .loader.done { transform: translateY(-101%); visibility: hidden; }
@@ -597,6 +618,41 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
    HERO — three grid rows. Nothing absolute.
    ══════════════════════════════════════════════════════════ */
 .hero {
+  /* ── why this clips ──
+     .hero-type-wrap::before is the stain the name sits in, and
+     it is inset -12% on each side so the glow runs past the
+     type. 12% of a phone's type column is 43px, and the sheet
+     gutter beside it is 18 — so 25px of stain hung off the
+     right edge of the document and the page could be dragged
+     sideways by exactly that much. The same thing happens on a
+     desktop (157px of bleed into a 64px gutter); it was simply
+     being absorbed by body's overflow rule, which is a page-
+     level band-aid over a hero-level fault.
+
+     Clipping here puts the containment where the overflow is.
+     `clip` and not `hidden`: clip never creates a scroll
+     container, so this cannot interact with the sticky Work
+     cards further down, and clipped content contributes no
+     scrollable overflow to anything above it. `hidden` leads
+     as the fallback for engines without clip — the hero's
+     height is auto, so it can never need to scroll.
+
+     NO overflow-clip-margin. It was tried, and the clip edge
+     it creates propagates as scrollable overflow to the
+     ancestors: a 1rem margin put back 16px of exactly the
+     sideways drag this rule exists to remove. Nothing needs
+     the slack anyway — the widest thing in here is the
+     opening animation's 16px glyph blur, and the glyph it
+     blurs already sits a full gutter inside the clip edge. */
+  overflow: hidden;
+  overflow: clip;
+
+  /* svh, so the hero is sized to the viewport WITH the mobile
+     browser's chrome showing — 100vh would put the foot of
+     the hero behind the URL bar until the user scrolls. The
+     vh line in front is the fallback for engines that have
+     neither svh nor dvh. */
+  min-height: 100vh;
   min-height: 100svh;
   padding: calc(var(--hdr) + 1.6rem) var(--pad) clamp(1.4rem,3.5vw,2.4rem);
   display: grid; grid-template-rows: auto 1fr auto;
@@ -1416,7 +1472,34 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
 
 /* ══════════════════════════════════════════════════════════
    RESPONSIVE
+   One ladder, widest first, each rung doing only what the
+   rung above it could not. The page is a stack of sheets, so
+   nothing here re-architects a layout — it collapses
+   multi-column grids to single and re-scales the devices
+   that were sized for a desk.
+
+   RUNGS
+   1180  the nav outgrows the bar → burger overlay
+   1024  tablet landscape: pull the display type back off a
+         vw curve that was tuned for a 1500px sheet
+    900  THE STACK. Every two-column grid goes to one, the
+         timeline moves to a left rail, and the Work cards
+         stop being sticky (see that block for why)
+    720  tablet portrait → phone: the plate's spine lies down,
+         the sheet head is allowed to wrap
+    620  phone: single column throughout, ticks retire, the
+         foxing layer stops repainting
+    480  narrow phone: the schedule stacks its own rows
+    380  the floor — 320px-class devices
+   short + landscape   the hero stops claiming a screen height
+   pointer: coarse     44px minimum on every target
+
+   --hdr is still the only header number, so each rung that
+   changes it gets every sticky offset and the scroll-padding
+   corrected for free.
    ══════════════════════════════════════════════════════════ */
+
+/* ── 1180 · the nav outgrows the bar ───────────────────── */
 @media (max-width: 1180px) {
   .tb-nav { display: none; }
   .tb-burger { display: block; }
@@ -1424,7 +1507,14 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
   .tb-nav.open {
     display: flex; position: fixed; inset: 0;
     flex-direction: column; align-items: flex-start; justify-content: center;
-    gap: .3rem; padding: var(--hdr) var(--pad) 0; background: var(--sheet);
+    gap: .3rem;
+    padding: calc(var(--hdr) + 1rem) var(--pad) calc(2.5rem + env(safe-area-inset-bottom, 0px));
+    background: var(--sheet);
+    /* a menu taller than the screen has to be reachable, and
+       the contained overscroll stops a flick at the end of
+       the list from scrolling the sheet behind it */
+    overflow-y: auto; overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   /* backdrop-filter makes .tb-inner a containing block for
      fixed children, which would trap the menu inside the
@@ -1442,20 +1532,85 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
   .tb-nav.open .nul-b { stroke-width: 1.6; }
 }
 
-/* timeline collapses to a single left-railed column */
+/* ── 1024 · tablet landscape ────────────────────────────
+   Still two columns everywhere. The only thing actually
+   wrong at this width is that the display type rides a vw
+   curve tuned for a 1500px sheet, so it eats more of its
+   column than it should. Pull the curves in; the layout
+   itself is fine. */
+@media (max-width: 1024px) {
+  .hero-type { font-size: clamp(4rem, 21vw, 13rem); }
+  .ct-head   { font-size: clamp(2.8rem, 10.5vw, 7rem); }
+  .ab-pair   { grid-template-columns: minmax(0,1.5fr) minmax(0,.7fr); }
+  .pj        { grid-template-columns: minmax(0,1.2fr) minmax(0,.8fr); }
+  .field-row { grid-template-columns: clamp(110px,18vw,170px) minmax(0,1fr); }
+}
+
+/* ── 900 · THE STACK ──────────────────────────────────── */
 @media (max-width: 900px) {
   .ab-pair { grid-template-columns: 1fr; }
   /* unstacked, the paragraph has the whole sheet to run across
      — cap it back to a readable measure */
   .readalong { max-width: 62ch; }
-  .plate { min-height: 210px; }
+
+  /* Unstacked, the plate inherits the whole sheet width, and the
+     portrait inside it is width:100% with a 1/1 ratio — so on a
+     768px tablet the identity photo came out 633px square and
+     became the largest thing on the page, outweighing the
+     paragraph it is meant to annotate. It is an identity plate,
+     not a poster: cap it so the photo keeps roughly the size it
+     has on a desk, and let it sit left on the sheet the way a
+     plate pinned to a drawing does. */
+  .plate { min-height: 210px; max-width: 420px; }
   .hero-foot { grid-template-columns: 1fr; }
-  .pj { grid-template-columns: 1fr; }
-  .pj-r { order: -1; min-height: 140px; }
-  /* a contained wide capture needs more than 140px of board
-     before it stops being a thumbnail of itself */
-  .pj-r:has(.pj-shot) { min-height: 200px; }
+  .hero-bio { max-width: 62ch; }
+
+  /* Facts go to two explicit columns rather than auto-fitting
+     into three. auto-fit was leaving the fourth fact alone on
+     row two carrying a left border — a column rule only reads
+     as a column rule when there is a column beside it. */
+  .facts { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .fact:nth-child(2n+1) { border-left: 0; padding-left: 0; }
+
   .field-row { grid-template-columns: 1fr; gap: .55rem; }
+
+  /* ── the Work cards stop being sticky ──
+     The stacked-card device needs each card to be SHORTER
+     than the viewport: the card pins at --stick, the next one
+     rides up over it, and you read the card while it is
+     pinned. Below this width the card is one column — print
+     above, copy below — so it is taller than any phone and
+     most tablets held in portrait, and a sticky box taller
+     than its scrollport pins with its own bottom permanently
+     off screen. The paragraph and the CTA become unreachable.
+
+     So the cards flow normally here. transform and opacity
+     carry !important because the stack module writes both
+     inline; this has to win whatever the frame loop last
+     wrote before the breakpoint was crossed. The module also
+     stops writing them and clears what it wrote — see
+     main.js §10 — so this is the guarantee, not the
+     mechanism. */
+  .pj {
+    position: static; top: auto;
+    min-height: 0;
+    margin-bottom: clamp(1.2rem,3.5vw,2rem);
+    transform: none !important;
+    opacity: 1 !important;
+    grid-template-columns: 1fr;
+  }
+  .pj:last-child { margin-bottom: 0; }
+
+  /* The print moves above the copy and takes a RATIO rather
+     than a min-height. A flat 200px floor made every capture
+     a letterbox slice of itself whatever width it had to work
+     with; a ratio keeps the panel proportional to the sheet,
+     so the crop is the same crop at every size. */
+  .pj-r { order: -1; min-height: 0; aspect-ratio: 16 / 10; }
+  /* top, not centre: every capture puts its headline content
+     in the upper left, which is exactly what a crop this
+     tight has to keep */
+  .pj-shot img { object-position: left top; }
 
   /* contact unstacks: call, then the schedule, then the plate */
   .ct-body {
@@ -1476,7 +1631,27 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
       "top   top";
   }
 
-  .tl-rail { left: 7px; transform: none; }
+  /* Timeline collapses to a single left-railed column. The
+     rail is 2px at left 6, so its centre is 7 — which is
+     where the node's centre is too. Off by one and the
+     diamond visibly hangs off the line it is meant to sit on. */
+  /* A card that has not landed yet is translated 40px off its
+     resting place and rotated in 3D, so its box sits outside
+     the column until --p reaches 1. On a desktop sheet it
+     swings into a wide gutter; here the gutter is 18px, so the
+     swing put ~22px of card past the edge of the document and
+     left the page draggable sideways for as long as any card
+     was mid-hinge.
+
+     Clip at the column rather than letting it reach the sheet
+     edge: the motion is unchanged, it is simply trimmed where
+     the card's own column ends, and nothing propagates outward
+     as scrollable overflow. `clip` and not `hidden`, so this
+     never becomes a scroll container — which would change what
+     position:sticky resolves against for anything inside it. */
+  .tl { overflow: hidden; overflow: clip; }
+
+  .tl-rail { left: 6px; transform: none; }
   .tl-item { grid-template-columns: 1fr; gap: 0; padding-left: 2.6rem; }
   .tl-l .tl-card, .tl-r .tl-card {
     grid-column: 1; transform-origin: left center;
@@ -1486,6 +1661,29 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
   .tl-l .tl-leader, .tl-r .tl-leader { left: 7px; right: auto; width: 1.9rem; }
 }
 
+/* ── 720 · tablet portrait into phone ──────────────────── */
+@media (max-width: 720px) {
+  /* The plate was a vertical spine beside the portrait. At
+     this width that spine is spending a whole column on
+     eleven rotated characters, so it lies back down into the
+     flow above the print and the plate goes to one column. */
+  .plate { grid-template-columns: minmax(0,1fr); gap: .8rem; }
+  .plate-spine {
+    grid-row: auto; writing-mode: horizontal-tb; transform: none;
+    letter-spacing: .22em;
+  }
+  .plate-foot { grid-column: 1; }
+
+  /* the sheet head is a flex row ending in a nowrap meta
+     label; let it wrap before the rule is squeezed to nothing */
+  .sheet-head { flex-wrap: wrap; row-gap: .4rem; }
+  .sh-rule { min-width: 24px; }
+
+  .aside-note { grid-template-columns: minmax(0,1fr); gap: .5rem; }
+  .an-k { padding-top: 0; }
+}
+
+/* ── 620 · phone ────────────────────────────────────────── */
 @media (max-width: 620px) {
   :root { --hdr: 4rem; }
   .hero-links { grid-template-columns: 1fr; }
@@ -1495,6 +1693,14 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
   .facts { grid-template-columns: 1fr; }
   .fact { border-left: 0; padding-left: 0; }
   .tb-clock { display: none; }
+
+  /* at this width the rule has no width left to be a rule */
+  .sh-rule { display: none; }
+  .sh-meta { margin-left: auto; }
+
+  /* a landscape capture on a portrait sheet: widen the ratio
+     so the panel stops being a tall crop of a wide image */
+  .pj-r { aspect-ratio: 16 / 9; }
 
   /* the schedule drops its Ref column and wraps the value onto
      its own line — three narrow columns plus a URL does not
@@ -1519,6 +1725,175 @@ body.cur-link, body.cur-link * { cursor: var(--cur-mark); }
     grid-template-areas: "name" "sheet" "rev" "date" "scale" "notes" "top";
   }
   .ticks { display: none; }
+
+  /* The foxing layer stops drifting. It is a full-viewport
+     fixed box of five radial gradients, and animating its
+     position means the compositor re-rasterises all of it
+     every frame — affordable on a laptop GPU and the single
+     most expensive thing on this page on a phone. The stains
+     are still there, they just hold still, which is what
+     paper does anyway. main.js stops writing a transform to
+     it below this width for the same reason. */
+  .topo { animation: none; will-change: auto; }
+}
+
+/* ── 480 · narrow phone ────────────────────────────────── */
+@media (max-width: 480px) {
+  /* The seal is a 100px spinning disc sharing a row with a
+     three-column status strip. Keep it — it is the scroll cue
+     — at a size that reads as a stamp rather than a column. */
+  .seal { width: 64px; }
+  .seal-ring text { font-size: 16px; }
+
+  .spec { gap: .85rem 1.4rem; }
+  .spec-v { font-size: .9rem; }
+
+  /* the indent is paying for a rail 2px wide */
+  .tl-item { padding-left: 2.1rem; }
+  .tl-l .tl-leader, .tl-r .tl-leader { width: 1.4rem; }
+  .tl-top { gap: .6rem; }
+
+  /* The schedule's two remaining columns are a channel name
+     and a value, and the value is an email address. Stack
+     them: the channel reads as the row's label, the value
+     sits under it, and the arrow spans both rows so the whole
+     cell stays one tap target. */
+  .ct-sched { --cs-cols: minmax(0,1fr) auto; }
+  .cs-head { display: none; }
+  .cs-row {
+    grid-template-areas: "ch  arr" "val arr";
+    row-gap: .1rem; padding: .7rem;
+  }
+  .cs-head, .cs-row { gap: .5rem; }
+  .cs-ch { grid-area: ch; }
+  .cs-v  { grid-area: val; font-size: .95rem; }
+  .cs-a  { grid-area: arr; align-self: center; }
+
+  .tbk { padding: .8rem .85rem; }
+  .ct-copy { max-width: none; }
+}
+
+/* ── 380 · the floor ───────────────────────────────────── */
+@media (max-width: 380px) {
+  /* the bar is three cells with an empty middle: the wordmark
+     can go and the monogram still identifies it */
+  .tb-name { display: none; }
+  .tb-right { gap: .6rem; }
+  .tb-cta { padding: .45rem .6rem; letter-spacing: .1em; }
+
+  /* the floors on the display curves were set for a 360px
+     phone; 320px-class devices need one step below them */
+  .hero-type { font-size: clamp(3.3rem, 21vw, 13rem); }
+  .ct-head   { font-size: clamp(2.3rem, 10.5vw, 7rem); }
+  .ld-num    { font-size: clamp(4rem, 24vw, 19rem); }
+  .fact-n    { font-size: clamp(2.2rem, 14vw, 4.4rem); }
+
+  .tl-item { padding-left: 1.9rem; }
+  .tl-card { padding: .95rem; }
+}
+
+/* ── short + landscape ─────────────────────────────────
+   A phone on its side is ~360px tall. Everything here that
+   claims a viewport height — the hero, the loader numeral,
+   the nav overlay, a pinned card — was sized against a
+   viewport whose short axis is its height, and on this one
+   it is not. Height-keyed, not width-keyed: a 900px-wide
+   phone in landscape has exactly the problem a 700px one
+   does, and a tablet in portrait has neither. */
+@media (max-height: 620px) and (orientation: landscape) {
+  /* centring a flex column that overflows clips its start,
+     and the clipped start is the first menu item */
+  .tb-nav.open { justify-content: flex-start; gap: .1rem; }
+  .tb-nav.open a { font-size: clamp(1.4rem, 7.5vh, 2.6rem); }
+  .tb-nav.open .nav-ul { height: 12px; bottom: 1px; }
+  .tb-nav.open .nul-a { stroke-width: 1.9; }
+  .tb-nav.open .nul-b { stroke-width: 1.3; }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  /* the hero stops reserving a screen it cannot fill: the
+     name alone at 21vw would be taller than the viewport */
+  .hero {
+    min-height: 0;
+    padding-top: calc(var(--hdr) + 1rem);
+    gap: clamp(1rem,3vh,1.8rem);
+  }
+  .hero-type { font-size: clamp(2.4rem, 15vh, 9rem); }
+  .ld-num { font-size: clamp(2.6rem, 26vh, 19rem); }
+  .ld-bars { padding-bottom: .4rem; }
+  .sec {
+    padding-top: clamp(2.4rem,7vw,7rem);
+    padding-bottom: clamp(2.4rem,7vw,7rem);
+  }
+  /* a card pinned at --stick on a 360px-tall viewport has
+     about 280px to show itself in; let it flow instead */
+  .pj {
+    position: static; top: auto; min-height: 0;
+    transform: none !important; opacity: 1 !important;
+  }
+
+  /* Same containment as the 900 rung, for the same reason, but
+     this one is keyed on height. A large phone on its side is
+     932px wide — past 900, so it keeps the two-column timeline
+     and the full ±70px hinge, and the swing goes off the sheet.
+     Width alone never catches this device. */
+  .tl { overflow: hidden; overflow: clip; }
+}
+
+/* ── touch targets ─────────────────────────────────────
+   Hit area only below this line: no layout moves, no colour
+   changes. 44px is the figure both platform guidelines land
+   on, and most of these controls were sized to a mono label
+   at .61rem, which is nowhere near it. */
+@media (pointer: coarse) {
+  .hl { min-height: 48px; }
+  .cs-row { min-height: 48px; }
+  .tb-cta, .pj-cta { min-height: 44px; display: inline-flex; align-items: center; }
+  .tbk-btn { min-height: 52px; justify-content: center; }
+  .tb-nav.open a { padding: .25rem 0; }
+  .tb-id { min-height: 44px; }
+
+  /* The email is the page's primary call and it was a 30px
+     line box. The padding goes on TOP so the hit area grows
+     upward into the gap the copy above already leaves — the
+     rule under the address, which is the thing that makes it
+     read as a link, stays tight against the text. */
+  .ct-mail { display: inline-block; padding-top: .9rem; }
+
+  /* Three links sharing one display-size heading. They cannot
+     take a min-height without breaking the line box they sit
+     in, but vertical padding on an inline box expands the hit
+     area without moving anything — which is the whole of what
+     is needed here. */
+  .pj-link { padding: .4rem 0; }
+
+  /* 26×17 of actual button. The overlay gives it 50×45 of hit
+     area without moving the three rules, which are positioned
+     absolutely against the padding box and would shift if the
+     button itself grew. */
+  .tb-burger::after { content: ""; position: absolute; inset: -14px -12px; }
+
+  /* Same trick, same reason. ABOVE 1180 the nav is a row of
+     .63rem mono labels in the bar — 16px tall — and a 1366px
+     tablet in landscape is a touchscreen that gets exactly
+     that. Padding is not an option here: .nav-ul is positioned
+     against this anchor's padding box, so growing the box
+     would drop the pencil mark 14px below the word it
+     underscores. An overlay grows the hit area and moves
+     nothing. 6px of horizontal reach stays well inside the
+     1.3rem gap, so neighbouring links cannot trade taps. */
+  .tb-nav a::after { content: ""; position: absolute; inset: -14px -6px; }
+
+  /* NOT enlarged, deliberately: the links inside .hero-bio and
+     .tl-list are single words inside a running sentence, and
+     WCAG 2.5.8 exempts a target that is "in a sentence or
+     block of text" precisely because padding one out to 44px
+     makes it collide with the lines above and below it. The
+     paragraph's own line rhythm is the affordance there. */
+
+  /* the OS already draws a press state; the default blue
+     flash over cream stock is the wrong one */
+  a, button { -webkit-tap-highlight-color: rgba(80,75,56,.14); }
 }
 
 /* ══════════════════════════════════════════════════════════

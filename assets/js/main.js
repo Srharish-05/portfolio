@@ -27,6 +27,53 @@
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FINE    = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+  /* ── LIVE BREAKPOINTS ──
+     Three of this file's devices are only correct at sizes the
+     stylesheet still lays out for them, so the queries have to
+     be live objects rather than booleans read once at load:
+     a phone rotating, a tablet in split view and a dragged
+     desktop window all cross these without a reload.
+
+     Each one is paired with the rung in styles.css that owns
+     the same number — if one moves, the other has to.
+
+       MQ_STACK  mirrors the 900 rung + the short-landscape
+                 rung: where .pj is still position:sticky
+       MQ_TOPO   mirrors the 620 rung: where the foxing layer
+                 is still allowed to move
+       MQ_NAV    mirrors the 1180 rung: where the nav is the
+                 burger overlay rather than a row in the bar */
+  const MQ_STACK = matchMedia('(min-width: 901px) and (min-height: 561px)');
+  const MQ_TOPO  = matchMedia('(min-width: 621px)');
+  const MQ_NAV   = matchMedia('(max-width: 1180px)');
+
+  /* ── latch ──
+     Wraps a query as a gate the frame loop asks every tick, and
+     runs `off` exactly ONCE on each falling edge. Both halves
+     matter: a device that stops running has to undo what it
+     last wrote inline — or the page keeps the final frame of an
+     animation that no longer applies — but clearing on every
+     frame would fight the stylesheet for the same properties.
+
+     POLLED, not a MediaQueryList 'change' listener. The loop is
+     already running, `.matches` is a cheap property read, and
+     polling cannot miss an edge: a resize coalesced into a
+     single layout, a transition that happened while the tab was
+     backgrounded, or any environment where the change event is
+     simply not delivered all resolve on the next frame, because
+     the gate compares against the state it last saw rather than
+     trusting that it was told. The event-driven version of this
+     silently left the page scroll-locked with no menu on screen
+     when the viewport grew past the burger breakpoint. */
+  const latch = (mq, off) => {
+    let was = null;
+    return () => {
+      const now = mq.matches;
+      if (now !== was) { was = now; if (!now) off(); }
+      return now;
+    };
+  };
+
   /* A split space must not collapse, or the gap between words
      disappears the moment each glyph becomes its own box. */
   const SP = '\u00a0';
@@ -205,6 +252,7 @@
     const drifters = $$('[data-drift]');
     const topo = $('#topo');
     const hero = $('#hero');
+    const topoLive = latch(MQ_TOPO, () => { if (topo) topo.style.transform = ''; });
     let px = 0, py = 0, tx = 0, ty = 0;   // pointer target, then eased
 
     if (FINE && hero) {
@@ -222,16 +270,32 @@
       // pointer term decay out rather than tracking forever
       const live = 1 - y / innerHeight;
 
+      /* The drift is a fraction of how far you have scrolled,
+         which on a desktop sheet is a few dozen px into a wide
+         margin. On a phone the name very nearly fills the
+         measure, so the same fraction walks the first line off
+         the left edge and clips the H — the sheet is being
+         pulled off a board that is no longer there. Scale the
+         amplitude to the slack the layout actually has. */
+      const amp = innerWidth < 760 ? 0.022 : 0.07;
+
       for (const el of drifters) {
         const dir = parseFloat(el.dataset.drift) || 1;
-        const sx = y * 0.07 * dir;                   // scroll drift
+        const sx = y * amp * dir;                    // scroll drift
         const mxp = tx * 13 * dir * live;            // pointer counter-drift
         const myp = ty * 5 * live;
         el.style.transform =
           `translate3d(${(sx + mxp).toFixed(1)}px,${myp.toFixed(1)}px,0)`;
       }
 
-      if (topo) {
+      /* The foxing layer is a full-viewport fixed box of five
+         radial gradients. Transforming it is one composited
+         layer on a laptop and a per-frame re-raster of the
+         whole screen on a phone, which is the most expensive
+         thing on this page for the least visible return — so
+         below the 620 rung it holds still, and the stylesheet
+         drops its keyframe animation to match. */
+      if (topo && topoLive()) {
         // the light trails the type: slower on scroll, and
         // against the pointer rather than with it
         topo.style.transform =
@@ -245,10 +309,36 @@
     const track = $('#tickerTrack');
     if (!track) return;
     const html = track.innerHTML;
-    let guard = 0;
-    while (track.scrollWidth < innerWidth * 2.4 && guard++ < 8) track.innerHTML += html;
-    const half = track.scrollWidth / 2;
-    let x = 0;
+    let half = 0, x = 0;
+
+    /* The track is duplicated until it is wide enough that the
+       seam is always off screen, and `half` — the distance the
+       loop wraps at — is measured from the result. Both depend
+       on innerWidth, so both are wrong after a rotation: a
+       phone turned to landscape more than doubles its width,
+       the copies no longer cover it, and the gap between the
+       last word and the first walks across the band. */
+    function build() {
+      track.innerHTML = html;
+      let guard = 0;
+      while (track.scrollWidth < innerWidth * 2.4 && guard++ < 10) track.innerHTML += html;
+      half = track.scrollWidth / 2;
+      x = 0;
+    }
+    build();
+
+    /* Width only. On a phone `resize` also fires every time the
+       URL bar collapses or re-appears, and rebuilding there
+       would snap the ticker back to zero mid-scroll for a
+       change that cannot affect it. */
+    let lastW = innerWidth, rt;
+    addEventListener('resize', () => {
+      if (innerWidth === lastW) return;
+      lastW = innerWidth;
+      clearTimeout(rt);
+      rt = setTimeout(build, 220);
+    });
+
     onFrame.push(b => {
       x -= (0.9 + Math.abs(b.vel) * 0.42) * b.dir;
       if (x <= -half) x += half;
@@ -343,7 +433,27 @@
   (function stack() {
     const cards = $$('.pj');
     if (!cards.length || REDUCED) return;
+
+    /* This device reads the gap between one card's top and the
+       next one's and turns it into a scale — which is only
+       meaningful while the cards are PINNED. Below the 900
+       rung (and on a phone in landscape) the stylesheet puts
+       them back into normal flow, where the next card's top is
+       simply wherever the document put it: the computed
+       progress runs straight to 1 and every card renders
+       permanently shrunk and faded at 75% opacity.
+
+       So the module stops writing. It also clears what it last
+       wrote on the way out, because the inline styles would
+       otherwise survive the breakpoint as a frozen final
+       frame. The stylesheet backs this with !important, so a
+       stale write can never win even for one frame. */
+    const stackLive = latch(MQ_STACK, () => {
+      for (const c of cards) { c.style.transform = ''; c.style.opacity = ''; }
+    });
+
     onFrame.push(() => {
+      if (!stackLive()) return;
       for (let i = 0; i < cards.length - 1; i++) {
         const cur = cards[i].getBoundingClientRect();
         if (cur.bottom < -200 || cur.top > innerHeight + 200) continue;
@@ -479,27 +589,53 @@
   // nav
   const bar = $('#topbar'), menu = $('#tbNav');
   const navA = $$('.tb-nav a'), secs = $$('section[id]');
+  const burger = $('#burger');
+
+  function closeMenu() {
+    menu.classList.remove('open');
+    burger.classList.remove('on');
+    burger.setAttribute('aria-expanded', 'false');
+    bar.classList.remove('menu-open');
+    document.body.classList.remove('lock');
+  }
+
+  /* Above the 1180 rung the overlay's rules stop applying and
+     the nav goes back to being a row in the bar — but `open`,
+     `menu-open` and body.lock are classes, not media queries,
+     so they survive the crossing. The visible overlay vanishes
+     and the page stays locked: scrolling is dead with nothing
+     on screen to explain why. Rotating a tablet with the menu
+     open is enough to land in it.
+
+     Declared ahead of the frame callback that calls it, not
+     merely ahead of the first rAF tick. */
+  const navLive = latch(MQ_NAV, closeMenu);
+
   onFrame.push(b => {
     // flush with the sheet at rest, floating callout once scrolled
     bar.classList.toggle('float', b.y > 8);
     let cur = '';
     for (const s of secs) if (b.y >= s.offsetTop - innerHeight * 0.4) cur = s.id;
     for (const a of navA) a.classList.toggle('on', a.getAttribute('href') === '#' + cur);
+    navLive();          // closes the overlay if the bar has reclaimed the nav
   });
 
-  const burger = $('#burger');
+  // an overlay that covers the whole screen needs the key that
+  // every other full-screen overlay answers to
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
+  });
+
   burger.addEventListener('click', () => {
     const open = menu.classList.toggle('open');
     burger.classList.toggle('on', open);
+    // below 1180px this button IS the navigation, so its state
+    // has to be readable by something other than the eye
+    burger.setAttribute('aria-expanded', String(open));
     bar.classList.toggle('menu-open', open);   // frees the fixed overlay
     document.body.classList.toggle('lock', open);
   });
-  navA.forEach(a => a.addEventListener('click', () => {
-    menu.classList.remove('open');
-    burger.classList.remove('on');
-    bar.classList.remove('menu-open');
-    document.body.classList.remove('lock');
-  }));
+  navA.forEach(a => a.addEventListener('click', closeMenu));
 
   // The steganography panel's bit-flipper lived here. It drove
   // #artBits, which went when that panel took a real image —
